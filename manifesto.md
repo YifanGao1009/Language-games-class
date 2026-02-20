@@ -1,6 +1,4 @@
 # Yifan's manifesto
-Do Not Accommodate Me
-
 I was once a piece of snow,
 so light it had no direction,
 only waiting in the air for a place.
