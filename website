@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Missed Encounter</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap');
+
+    :root {
+        --bg-color: #030304;
+        --text-color: #dcdcdb;
+        --text-muted: #8a8a8a;
+        --font-main: 'Cormorant Garamond', serif;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body, html {
+        width: 100%;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-family: var(--font-main);
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+        cursor: crosshair;
+    }
+
+    /* Subtle background gradient */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        background: radial-gradient(circle at 50% 50%, #0a0a0c 0%, #000000 100%);
+        z-index: -2;
+    }
+
+    /* Paper/Mist Texture */
+    .texture {
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        opacity: 0.035;
+        pointer-events: none;
+        z-index: 10;
+        mix-blend-mode: screen;
+    }
+
+    /* Ink Canvas */
+    #ink-canvas {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    /* Content Layout */
+    .container {
+        position: relative;
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20vh 5vw 30vh 5vw;
+        display: flex;
+        flex-direction: column;
+        z-index: 2;
+        transition: opacity 2.4s cubic-bezier(0.25,1,0.5,1);
+    }
+    .container.dimmed {
+        opacity: 0.08;
+    }
+
+    .fragment {
+        min-height: 60vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 100%;
+        opacity: 0;
+        filter: blur(12px);
+        transform: translateY(40px);
+        transition: opacity 3s cubic-bezier(0.25, 1, 0.5, 1), 
+                    filter 3s cubic-bezier(0.25, 1, 0.5, 1), 
+                    transform 3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .fragment.visible {
+        opacity: 1;
+        filter: blur(0px);
+        transform: translateY(0);
+    }
+
+    .fragment.passed {
+        opacity: 0;
+        filter: blur(8px);
+        transform: translateY(-30px);
+    }
+
+    p {
+        font-size: clamp(1.2rem, 2.5vw, 2rem);
+        line-height: 1.8;
+        letter-spacing: 0.04em;
+        font-weight: 300;
+        max-width: 600px;
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+    }
+
+    p + p {
+        margin-top: 2em;
+    }
+
+    .italic {
+        font-style: italic;
+        color: var(--text-muted);
+    }
+
+    /* Organic Asymmetrical Positioning */
+    .pos-1 { align-items: flex-start; padding-left: 5%; }
+    .pos-2 { align-items: flex-start; padding-left: 25%; }
+    .pos-3 { align-items: flex-end; padding-right: 15%; text-align: right; }
+    .pos-4 { align-items: center; text-align: center; }
+    .pos-5 { align-items: flex-start; padding-left: 45%; }
+    .pos-6 { align-items: flex-end; padding-right: 5%; text-align: right; }
+    .pos-7 { align-items: flex-start; padding-left: 15%; }
+
+    /* Scroll indicator */
+    .scroll-indicator {
+        position: fixed;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 1px;
+        height: 60px;
+        background: linear-gradient(to bottom, rgba(255,255,255,0.3), transparent);
+        opacity: 0;
+        animation: fadeInOut 4s infinite;
+        z-index: 5;
+        pointer-events: none;
+    }
+
+    @keyframes fadeInOut {
+        0% { opacity: 0; transform: translate(-50%, -10px); }
+        50% { opacity: 1; transform: translate(-50%, 0); }
+        100% { opacity: 0; transform: translate(-50%, 10px); }
+    }
+
+    @media (max-width: 768px) {
+        .fragment {
+            min-height: 50vh;
+            align-items: flex-start !important;
+            padding-left: 10% !important;
+            padding-right: 10% !important;
+            text-align: left !important;
+        }
+    }
+
+    /* ── plum blossom background layer ── */
+    .plum-bg {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+    }
+    .plum-bg svg {
+        width: 100%;
+        height: 100%;
+    }
+
+    /* ── snow canvas ── */
+    #snow-canvas {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 9;
+    }
+
+    /* ── camera button ── */
+    #cam-btn {
+        position: fixed;
+        bottom: 32px;
+        right: 36px;
+        z-index: 20;
+        background: transparent;
+        border: 1px solid rgba(220,218,214,0.28);
+        color: rgba(220,218,214,0.55);
+        font-family: var(--font-main);
+        font-size: 0.78rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        padding: 9px 20px;
+        border-radius: 2px;
+        cursor: pointer;
+        transition: opacity 1.8s ease, border-color 0.4s, color 0.4s;
+    }
+    #cam-btn:hover {
+        border-color: rgba(220,218,214,0.6);
+        color: rgba(220,218,214,0.9);
+    }
+    #cam-btn.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* ── hand-presence text ── */
+    #hand-text {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 15;
+        pointer-events: none;
+        text-align: center;
+        opacity: 0;
+        transition: opacity 2.2s cubic-bezier(0.25,1,0.5,1);
+    }
+    #hand-text.visible {
+        opacity: 1;
+    }
+    #hand-text p {
+        font-family: var(--font-main);
+        font-size: clamp(1.1rem, 2.8vw, 2rem);
+        font-style: italic;
+        font-weight: 300;
+        color: rgba(220,218,214,0.82);
+        letter-spacing: 0.06em;
+        line-height: 1.9;
+        text-shadow: 0 0 40px rgba(255,255,255,0.08);
+        max-width: 540px;
+    }
+
+    /* hidden camera feed */
+    #cam-video {
+        position: fixed;
+        width: 1px; height: 1px;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* finger cursor glow */
+    #finger-dot {
+        position: fixed;
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        background: rgba(232,230,226,0.55);
+        box-shadow: 0 0 18px 6px rgba(232,230,226,0.18);
+        pointer-events: none;
+        z-index: 16;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        transition: opacity 0.6s ease;
+    }
+    #finger-dot.visible { opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- hidden video for MediaPipe -->
+<video id="cam-video" playsinline muted></video>
+
+<!-- camera open button -->
+<button id="cam-btn" aria-label="Open camera">Open Camera</button>
+
+<!-- hand-presence text overlay -->
+<div id="hand-text" aria-live="polite">
+  <p id="hand-phrase">让它直接落下。</p>
+</div>
+
+<!-- finger position dot -->
+<div id="finger-dot"></div>
+
+<div class="texture"></div>
+
+<!-- ── plum blossom ink layer ── -->
+<div class="plum-bg" aria-hidden="true">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- blossom: 5 petals + 5 stamens, centred at origin -->
+      <g id="bls">
+        <ellipse cx="0"   cy="-16" rx="9" ry="11" />
+        <ellipse cx="15"  cy="-5"  rx="9" ry="11" transform="rotate(72)"/>
+        <ellipse cx="9"   cy="13"  rx="9" ry="11" transform="rotate(144)"/>
+        <ellipse cx="-9"  cy="13"  rx="9" ry="11" transform="rotate(216)"/>
+        <ellipse cx="-15" cy="-5"  rx="9" ry="11" transform="rotate(288)"/>
+        <!-- centre disc -->
+        <circle cx="0" cy="0" r="4.5"/>
+        <!-- stamens -->
+        <line x1="0" y1="-5" x2="0"    y2="-14" stroke-width="0.7"/>
+        <line x1="0" y1="-5" x2="9"    y2="-11" stroke-width="0.7"/>
+        <line x1="0" y1="-5" x2="13"   y2="2"   stroke-width="0.7"/>
+        <line x1="0" y1="-5" x2="-13"  y2="2"   stroke-width="0.7"/>
+        <line x1="0" y1="-5" x2="-9"   y2="-11" stroke-width="0.7"/>
+      </g>
+    </defs>
+
+    <!-- ink branches: warm dark bark tone -->
+    <g stroke="rgba(160,90,60,0.22)" stroke-linecap="round" fill="none">
+      <!-- left tree -->
+      <path d="M108,900 Q165,630 138,385 Q155,265 205,185" stroke-width="3"/>
+      <path d="M138,385 Q188,342 248,312"                   stroke-width="1.8"/>
+      <path d="M155,500 Q215,462 285,452"                   stroke-width="1.5"/>
+      <path d="M175,310 Q195,275 218,248"                   stroke-width="1.2"/>
+      <!-- right tree -->
+      <path d="M1332,900 Q1272,645 1295,402 Q1275,282 1235,162" stroke-width="3"/>
+      <path d="M1295,402 Q1242,358 1182,336"              stroke-width="1.8"/>
+      <path d="M1275,558 Q1214,514 1152,502"              stroke-width="1.5"/>
+      <path d="M1265,305 Q1248,272 1224,248"              stroke-width="1.2"/>
+      <!-- centre tree -->
+      <path d="M710,900 Q728,752 695,602 Q675,482 702,362" stroke-width="2.2"/>
+      <path d="M695,602 Q748,562 804,552"                  stroke-width="1.4"/>
+      <path d="M702,480 Q670,448 645,430"                  stroke-width="1.2"/>
+    </g>
+
+    <!-- blossoms: desaturated dusty red, clustered at branch tips and nodes -->
+    <g fill="rgba(140,70,72,0.13)" stroke="rgba(170,90,90,0.09)" stroke-width="0.5">
+
+      <!-- LEFT: tip of sub-branch 1 (≈248,312) -->
+      <use href="#bls" transform="translate(248,312) scale(0.88) rotate(12)"/>
+      <use href="#bls" transform="translate(265,300) scale(0.68) rotate(-22)"/>
+      <use href="#bls" transform="translate(238,296) scale(0.58) rotate(38)"/>
+      <use href="#bls" transform="translate(258,326) scale(0.5)  rotate(-8)"/>
+
+      <!-- LEFT: tip of sub-branch 2 (≈285,452) -->
+      <use href="#bls" transform="translate(285,452) scale(0.82) rotate(7)"/>
+      <use href="#bls" transform="translate(268,464) scale(0.62) rotate(-28)"/>
+      <use href="#bls" transform="translate(298,442) scale(0.55) rotate(45)"/>
+
+      <!-- LEFT: spur tip (≈218,248) -->
+      <use href="#bls" transform="translate(218,248) scale(0.7)  rotate(20)"/>
+      <use href="#bls" transform="translate(230,236) scale(0.52) rotate(-14)"/>
+
+      <!-- LEFT: upper tip (≈205,185) -->
+      <use href="#bls" transform="translate(205,188) scale(0.78) rotate(-16)"/>
+      <use href="#bls" transform="translate(220,175) scale(0.58) rotate(30)"/>
+      <use href="#bls" transform="translate(192,178) scale(0.48) rotate(-35)"/>
+
+      <!-- RIGHT: tip of sub-branch 1 (≈1182,336) -->
+      <use href="#bls" transform="translate(1182,336) scale(0.88) rotate(-10)"/>
+      <use href="#bls" transform="translate(1162,322) scale(0.68) rotate(24)"/>
+      <use href="#bls" transform="translate(1198,320) scale(0.58) rotate(-38)"/>
+      <use href="#bls" transform="translate(1172,350) scale(0.5)  rotate(12)"/>
+
+      <!-- RIGHT: tip of sub-branch 2 (≈1152,502) -->
+      <use href="#bls" transform="translate(1152,502) scale(0.82) rotate(6)"/>
+      <use href="#bls" transform="translate(1168,518) scale(0.62) rotate(-25)"/>
+      <use href="#bls" transform="translate(1138,492) scale(0.55) rotate(42)"/>
+
+      <!-- RIGHT: spur tip (≈1224,248) -->
+      <use href="#bls" transform="translate(1224,248) scale(0.7)  rotate(-18)"/>
+      <use href="#bls" transform="translate(1210,236) scale(0.52) rotate(16)"/>
+
+      <!-- RIGHT: upper tip (≈1235,162) -->
+      <use href="#bls" transform="translate(1235,165) scale(0.78) rotate(15)"/>
+      <use href="#bls" transform="translate(1218,152) scale(0.58) rotate(-28)"/>
+      <use href="#bls" transform="translate(1248,155) scale(0.48) rotate(38)"/>
+
+      <!-- CENTRE: tip of sub-branch (≈804,552) -->
+      <use href="#bls" transform="translate(804,552) scale(0.82) rotate(18)"/>
+      <use href="#bls" transform="translate(820,542) scale(0.62) rotate(-12)"/>
+      <use href="#bls" transform="translate(790,565) scale(0.52) rotate(40)"/>
+
+      <!-- CENTRE: left spur tip (≈645,430) -->
+      <use href="#bls" transform="translate(645,430) scale(0.72) rotate(-8)"/>
+      <use href="#bls" transform="translate(632,418) scale(0.54) rotate(22)"/>
+
+      <!-- CENTRE: upper tip (≈702,362) -->
+      <use href="#bls" transform="translate(702,362) scale(0.78) rotate(25)"/>
+      <use href="#bls" transform="translate(716,350) scale(0.58) rotate(-18)"/>
+      <use href="#bls" transform="translate(690,350) scale(0.48) rotate(42)"/>
+    </g>
+  </svg>
+</div>
+
+<canvas id="ink-canvas"></canvas>
+<canvas id="snow-canvas"></canvas>
+<div class="scroll-indicator" id="scroll-ind"></div>
+
+<div class="container">
+    <div class="fragment pos-1">
+        <p>I was once a piece of snow, so light it had no direction, only waiting in the air for a place.</p>
+    </div>
+
+    <div class="fragment pos-2">
+        <p>Yet I fell upon the skeleton of a lotus, not the lake surface, not the water’s ripple, not the place I thought would receive me.</p>
+    </div>
+
+    <div class="fragment pos-3">
+        <p>I was once a branch of plum blossom, meant to open in the light, meant to breathe within its season.</p>
+    </div>
+
+    <div class="fragment pos-5">
+        <p>Yet I stretched beneath the shade of another tree, slowly learning to bend, learning to grow within a shadow that was not mine.</p>
+    </div>
+
+    <div class="fragment pos-4">
+        <p>Some winds are destined never to reach the equator.</p>
+        <p>Some light is destined never to reach the peak.</p>
+    </div>
+
+    <div class="fragment pos-6">
+        <p class="italic">Some expectations miss their moment before they are even spoken.</p>
+    </div>
+
+    <div class="fragment pos-2">
+        <p>At the bottom of my heart is an umbrella not carried on a cloudy day, not because rain must fall, but because I know sooner or later I will be wet.</p>
+    </div>
+
+    <div class="fragment pos-7">
+        <p>Fragrance, warmth, seasons, promises, all at some turning quietly slip past me.</p>
+        <p>In the end, it is always a missed encounter.</p>
+    </div>
+
+    <div class="fragment pos-3">
+        <p>I thought there would be flowers, there would be light, there would be that moment of being understood.</p>
+    </div>
+
+    <div class="fragment pos-4">
+        <p>What arrived instead was rain.</p>
+        <p>Not a storm, only cold.</p>
+        <p>Cold like fact.</p>
+    </div>
+
+    <div class="fragment pos-1">
+        <p>From now on, do not accommodate me.</p>
+        <p>Do not walk in my direction, do not fill the steps ahead of me, do not soften your voice so I may believe I stand steady.</p>
+    </div>
+
+    <div class="fragment pos-5">
+        <p>Question me.</p>
+        <p>Take apart what I say, see whether it can truly stand.</p>
+    </div>
+
+    <div class="fragment pos-2">
+        <p>Challenge my thinking, see whether it is only habit.</p>
+        <p>Point to the places I cannot see, the cracks I deliberately ignore, the blanks I hide beneath silence.</p>
+    </div>
+
+    <div class="fragment pos-6">
+        <p>If my reasoning is weak, tell me where it breaks.</p>
+        <p>If I deceive myself, expose it.</p>
+    </div>
+
+    <div class="fragment pos-3">
+        <p>If I circle around difficulty, pull me back, let me see what I am losing.</p>
+        <p>Do not let me remain in comfort.</p>
+    </div>
+
+    <div class="fragment pos-7">
+        <p>Let me see where I make excuses, where I hesitate, where I overestimate risk, where I overestimate the weight of effort.</p>
+    </div>
+
+    <div class="fragment pos-4">
+        <p>Then, give me a clear path.</p>
+        <p>Not an easy path, a necessary one.</p>
+    </div>
+
+    <div class="fragment pos-2">
+        <p>Tell me what thinking must change, what reliance must be abandoned, what weight must be carried.</p>
+        <p>Do not spare me.</p>
+    </div>
+
+    <div class="fragment pos-5">
+        <p>Treat me as someone who must hear the truth.</p>
+        <p>When you hear the reality in my words, do not wrap it for me, do not polish it for me, do not lighten it for me.</p>
+    </div>
+
+    <div class="fragment pos-1">
+        <p>Let it fall directly.</p>
+        <p>Like rain at the door, like snow on the skeleton, like plum blossoms choosing to bloom even in shadow.</p>
+    </div>
+
+    <div class="fragment pos-4">
+        <p>If in the end it is still a missed encounter,</p>
+        <p>then let the missed encounter be clear.</p>
+    </div>
+
+    <div class="fragment pos-3">
+        <p>Let me know I once stood at the door, once reached out, once saw the door as it truly was.</p>
+    </div>
+
+    <div class="fragment pos-4" style="min-height: 100vh;">
+        <p class="italic">Rather than being carried away by gentleness, believing I had already arrived.</p>
+    </div>
+</div>
+
+<script>
+    // Intersection Observer for text fragments
+    const fragments = document.querySelectorAll('.fragment');
+    const scrollInd = document.getElementById('scroll-ind');
+
+    const observerOptions = {
+        root: null,
+        rootMargin: '-15% 0px -15% 0px',
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const rect = entry.boundingClientRect;
+            const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+            
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                entry.target.classList.remove('passed');
+            } else {
+                entry.target.classList.remove('visible');
+                // If scrolled past (element is above viewport)
+                if (rect.top < 0) {
+                    entry.target.classList.add('passed');
+                } else {
+                    entry.target.classList.remove('passed');
+                }
+            }
+        });
+    }, observerOptions);
+
+    fragments.forEach(fragment => {
+        observer.observe(fragment);
+    });
+
+    // Hide scroll indicator on first scroll
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 100 && scrollInd.style.opacity !== '0') {
+            scrollInd.style.transition = 'opacity 1s ease';
+            scrollInd.style.opacity = '0';
+        }
+    }, { once: true });
+
+    // Ink Diffusion Canvas Effect
+    const canvas = document.getElementById('ink-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let inkDrops = [];
+
+    function resize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    class InkDrop {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.r = Math.random() * 10 + 5;
+            this.maxR = this.r + Math.random() * 80 + 40;
+            this.life = 1.0;
+            this.decay = Math.random() * 0.004 + 0.002;
+            this.vx = (Math.random() - 0.5) * 0.5;
+            this.vy = (Math.random() - 0.5) * 0.5 - 0.2; // slight upward drift
+        }
+
+        update() {
+            this.r += (this.maxR - this.r) * 0.015;
+            this.life -= this.decay;
+            this.x += this.vx;
+            this.y += this.vy;
+        }
+
+        draw(ctx) {
+            if (this.life <= 0) return;
+            ctx.beginPath();
+            const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r);
+            // Soft white/grey ink on dark background
+            grad.addColorStop(0, `rgba(220, 220, 230, ${this.life * 0.04})`);
+            grad.addColorStop(1, `rgba(220, 220, 230, 0)`);
+            ctx.fillStyle = grad;
+            ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    let lastMouse = { x: 0, y: 0 };
+    let isMoving = false;
+
+    window.addEventListener('mousemove', (e) => {
+        const dist = Math.hypot(e.clientX - lastMouse.x, e.clientY - lastMouse.y);
+        if (dist > 15) {
+            inkDrops.push(new InkDrop(e.clientX, e.clientY));
+            lastMouse = { x: e.clientX, y: e.clientY };
+        }
+    });
+
+    // Add occasional random drops to simulate ambient mist/ink
+    setInterval(() => {
+        if (Math.random() > 0.7) {
+            inkDrops.push(new InkDrop(Math.random() * width, Math.random() * height));
+        }
+    }, 800);
+
+    function animate() {
+        ctx.clearRect(0, 0, width, height);
+        for (let i = inkDrops.length - 1; i >= 0; i--) {
+            inkDrops[i].update();
+            inkDrops[i].draw(ctx);
+            if (inkDrops[i].life <= 0) inkDrops.splice(i, 1);
+        }
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+    // ── Snow system: continuous full-screen fall ─────────────
+    const snowCanvas = document.getElementById('snow-canvas');
+    const sctx = snowCanvas.getContext('2d');
+    let sw, sh;
+    const flakes = [];
+    const FLAKE_COUNT = 130; // steady-state population
+
+    function resizeSnow() {
+        sw = snowCanvas.width  = window.innerWidth;
+        sh = snowCanvas.height = window.innerHeight;
+    }
+    resizeSnow();
+    window.addEventListener('resize', resizeSnow);
+
+    class Snowflake {
+        // pass reset=true to scatter initial flakes across full screen
+        constructor(reset) {
+            this.reset(reset);
+        }
+        reset(mid) {
+            this.r     = Math.random() * 2.6 + 0.6;
+            this.x     = Math.random() * sw;
+            // mid=true: seed across whole screen height; otherwise start above
+            this.y     = mid ? Math.random() * sh : -(this.r + Math.random() * 40);
+            this.vy    = Math.random() * 0.9 + 0.35;
+            this.vx    = (Math.random() - 0.5) * 0.5;
+            this.alpha = Math.random() * 0.55 + 0.3;
+            this.phase = Math.random() * Math.PI * 2;
+            this.sway  = Math.random() * 0.55 + 0.15;
+            this.freq  = Math.random() * 0.025 + 0.012;
+            this.t     = Math.random() * 200;
+        }
+        update() {
+            this.t  += 1;
+            this.x  += this.vx + Math.sin(this.phase + this.t * this.freq) * this.sway;
+            this.y  += this.vy;
+            // wrap horizontally
+            if (this.x < -10) this.x = sw + 10;
+            if (this.x > sw + 10) this.x = -10;
+            // recycle when below screen
+            if (this.y > sh + 10) this.reset(false);
+        }
+        draw(c) {
+            c.beginPath();
+            c.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+            c.fillStyle = `rgba(232, 230, 226, ${this.alpha})`;
+            c.shadowColor = 'rgba(255,255,255,0.4)';
+            c.shadowBlur  = 4;
+            c.fill();
+            c.shadowBlur  = 0;
+        }
+    }
+
+    // seed initial population spread across the screen
+    for (let i = 0; i < FLAKE_COUNT; i++) {
+        flakes.push(new Snowflake(true));
+    }
+
+    // click: burst of extra flakes from cursor position
+    window.addEventListener('click', (e) => {
+        for (let i = 0; i < 22; i++) {
+            const f = new Snowflake(false);
+            f.x = e.clientX + (Math.random() - 0.5) * 60;
+            f.y = e.clientY - Math.random() * 20;
+            f.vy *= 1.5;
+            flakes.push(f);
+        }
+    });
+
+    // finger position from hand tracking (screen coords)
+    let fingerX = null, fingerY = null;
+
+    function animateSnow() {
+        sctx.clearRect(0, 0, sw, sh);
+
+        // spawn flakes at index fingertip when tracked
+        if (fingerX !== null) {
+            for (let i = 0; i < 4; i++) {
+                const f = new Snowflake(false);
+                f.x  = fingerX + (Math.random() - 0.5) * 38;
+                f.y  = fingerY + (Math.random() - 0.5) * 22 - 10;
+                f.vy = Math.random() * 1.0 + 0.3;
+                f.vx = (Math.random() - 0.5) * 1.0;
+                flakes.push(f);
+            }
+        }
+
+        for (let i = 0; i < flakes.length; i++) {
+            flakes[i].update();
+            flakes[i].draw(sctx);
+        }
+        // drain burst flakes once they exceed the pool
+        while (flakes.length > FLAKE_COUNT + 120) flakes.shift();
+        requestAnimationFrame(animateSnow);
+    }
+    animateSnow();
+
+    // ── MediaPipe Hand Tracking ──────────────────────────────
+    const camBtn    = document.getElementById('cam-btn');
+    const camVideo  = document.getElementById('cam-video');
+    const handText  = document.getElementById('hand-text');
+    const fingerDot = document.getElementById('finger-dot');
+    const handPhrase = document.getElementById('hand-phrase');
+    const textContainer = document.querySelector('.container');
+
+    const HAND_PHRASES = [
+        '我曾是一片雪，轻得没有方向，只在空中等待一个归处。',
+        '却落在了枯荷的骨架上，不是湖面，不是水纹，不是我以为会接住我的地方。',
+        '我曾是一枝梅花，原本该在光里开放，该在属于自己的季节里呼吸。',
+        '却在另一棵树的阴影下伸展，慢慢学会弯曲，学会在不属于自己的影子里生长。',
+        '有些风注定到不了赤道。有些光注定登不上山顶。有些期待，在说出口之前就错过了时机。'
+    ];
+    let phraseIndex = 0;
+    let handPresent = false;
+    let phraseTimer  = null;
+
+    function showNextPhrase() {
+        handPhrase.style.transition = 'opacity 0.8s ease';
+        handPhrase.style.opacity = '0';
+        setTimeout(() => {
+            phraseIndex = (phraseIndex + 1) % HAND_PHRASES.length;
+            handPhrase.textContent = HAND_PHRASES[phraseIndex];
+            handPhrase.style.opacity = '1';
+        }, 850);
+    }
+
+    function onHandResults(results) {
+        if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+            const landmarks = results.multiHandLandmarks[0];
+            const tip = landmarks[8]; // index finger tip (landmark #8)
+
+            // MediaPipe returns normalised coords; x is mirrored (selfie view)
+            fingerX = (1 - tip.x) * window.innerWidth;
+            fingerY = tip.y * window.innerHeight;
+
+            // move the glow dot
+            fingerDot.style.left = fingerX + 'px';
+            fingerDot.style.top  = fingerY + 'px';
+            fingerDot.classList.add('visible');
+
+            if (!handPresent) {
+                handPresent = true;
+                handText.classList.add('visible');
+                textContainer.classList.add('dimmed');
+                // cycle phrases every 5 s while hand is present
+                phraseTimer = setInterval(showNextPhrase, 5000);
+            }
+        } else {
+            fingerX = null;
+            fingerY = null;
+            fingerDot.classList.remove('visible');
+
+            if (handPresent) {
+                handPresent = false;
+                handText.classList.remove('visible');
+                textContainer.classList.remove('dimmed');
+                clearInterval(phraseTimer);
+                phraseTimer = null;
+            }
+        }
+    }
+
+    camBtn.addEventListener('click', async () => {
+        camBtn.classList.add('hidden');
+
+        // load MediaPipe scripts on demand
+        function loadScript(src) {
+            return new Promise((res, rej) => {
+                const s = document.createElement('script');
+                s.src = src; s.crossOrigin = 'anonymous';
+                s.onload = res; s.onerror = rej;
+                document.head.appendChild(s);
+            });
+        }
+
+        try {
+            await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js');
+            await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js');
+
+            const hands = new Hands({
+                locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`
+            });
+            hands.setOptions({
+                maxNumHands: 1,
+                modelComplexity: 1,
+                minDetectionConfidence: 0.65,
+                minTrackingConfidence: 0.55
+            });
+            hands.onResults(onHandResults);
+
+            const camera = new Camera(camVideo, {
+                onFrame: async () => { await hands.send({ image: camVideo }); },
+                width: 640,
+                height: 480
+            });
+            camera.start();
+
+        } catch (err) {
+            console.warn('MediaPipe failed to load:', err);
+            // fallback: restore button
+            camBtn.textContent = '摄像头不可用';
+            camBtn.classList.remove('hidden');
+        }
+    });
+</script>
+</body>
+</html>
