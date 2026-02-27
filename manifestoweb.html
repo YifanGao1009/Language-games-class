@@ -268,7 +268,7 @@
 
 <!-- hand-presence text overlay -->
 <div id="hand-text" aria-live="polite">
-  <p id="hand-phrase">让它直接落下。</p>
+  <p id="hand-phrase"></p>
 </div>
 
 <!-- finger position dot -->
@@ -750,10 +750,15 @@
 
             if (!handPresent) {
                 handPresent = true;
+                phraseIndex = 0;
+                // reset any stale inline opacity from a mid-fade interruption
+                handPhrase.style.transition = 'none';
+                handPhrase.style.opacity = '1';
+                handPhrase.textContent = HAND_PHRASES[phraseIndex];
                 handText.classList.add('visible');
                 textContainer.classList.add('dimmed');
-                // cycle phrases every 5 s while hand is present
-                phraseTimer = setInterval(showNextPhrase, 5000);
+                // cycle phrases every 3 s while hand is present
+                phraseTimer = setInterval(showNextPhrase, 3000);
             }
         } else {
             fingerX = null;
