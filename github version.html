@@ -1,0 +1,1952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Echo · Pulse — Biological Boundary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;background:#000;overflow:hidden}
+
+@keyframes breatheSlow{0%,100%{transform:scale(0.97);opacity:.55}50%{transform:scale(1.03);opacity:.9}}
+@keyframes breatheFast{0%,100%{transform:scale(0.95)}50%{transform:scale(1.06)}}
+@keyframes rippleOut{0%{transform:translate(-50%,-50%) scale(0.6);opacity:.55}100%{transform:translate(-50%,-50%) scale(2.4);opacity:0}}
+@keyframes flowIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeOut{from{opacity:1}to{opacity:0}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes bgAmber{0%,100%{opacity:0}40%,60%{opacity:1}}
+@keyframes bgCold{0%,100%{opacity:0}40%,60%{opacity:1}}
+@keyframes drift{0%{opacity:.18;transform:translateY(-8px) translateX(0)}20%{opacity:.7}90%{opacity:.45}100%{opacity:0;transform:translateY(100vh) translateX(var(--dx,20px))}}
+@keyframes emotionPulse{0%{opacity:.3;transform:scale(0.95)}50%{opacity:.65;transform:scale(1.02)}100%{opacity:.3;transform:scale(0.95)}}
+@keyframes emotionGlow{0%{box-shadow:0 0 8px rgba(255,179,71,0.2)}50%{box-shadow:0 0 20px rgba(255,179,71,0.5)}100%{box-shadow:0 0 8px rgba(255,179,71,0.2)}}
+@keyframes emotionColdGlow{0%{box-shadow:0 0 8px rgba(0,209,255,0.2)}50%{box-shadow:0 0 20px rgba(0,209,255,0.4)}100%{box-shadow:0 0 8px rgba(0,209,255,0.2)}}
+@keyframes liquidWave{0%{d:path('M0,30 Q15,20 30,30 T60,30 T90,30 T120,30 T150,30')}50%{d:path('M0,28 Q15,15 30,28 T60,32 T90,28 T120,35 T150,28')}100%{d:path('M0,30 Q15,20 30,30 T60,30 T90,30 T120,30 T150,30')}}
+@keyframes particleFloat{0%{opacity:0;transform:translateY(100vh) translateX(0)}10%{opacity:.4}80%{opacity:.3}100%{opacity:0;transform:translateY(-100vh) translateX(var(--shift))}}
+@keyframes warmGlow{0%{opacity:0}50%{opacity:.15}100%{opacity:0}}
+@keyframes coolGlow{0%{opacity:0}50%{opacity:.12}100%{opacity:0}}
+@keyframes emotionShockwave{0%{r:0;opacity:.8}100%{r:220px;opacity:0}}
+@keyframes harmonizeFlow{0%{opacity:0;filter:blur(20px)}50%{opacity:.4;filter:blur(8px)}100%{opacity:0;filter:blur(20px)}}
+@keyframes intenseCharge{0%,100%{filter:brightness(1)}50%{filter:brightness(1.3)}}
+@keyframes calmBreathing{0%,100%{opacity:.3}50%{opacity:.7}}
+@keyframes tensePulse{0%{opacity:.2}10%{opacity:.6}20%{opacity:.25}100%{opacity:.2}}
+@keyframes angryVibrate{0%,100%{transform:translateX(0)}10%{transform:translateX(-2px)}20%{transform:translateX(2px)}30%{transform:translateX(-3px)}40%{transform:translateX(3px)}50%{transform:translateX(0)}}
+@keyframes radialFieldPulse{0%{r:0;opacity:.6}100%{r:300px;opacity:0}}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes spinFast{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+@keyframes harmonizeRing{0%{transform:rotate(0deg);box-shadow:0 0 18px rgba(0,209,255,0.35),inset 0 0 12px rgba(0,209,255,0.12)}50%{box-shadow:0 0 28px rgba(0,209,255,0.48),inset 0 0 18px rgba(0,209,255,0.18)}100%{transform:rotate(360deg);box-shadow:0 0 18px rgba(0,209,255,0.35),inset 0 0 12px rgba(0,209,255,0.12)}}
+@keyframes silenceRing{0%,100%{transform:rotate(0deg);box-shadow:0 0 6px rgba(180,180,180,0.15),inset 0 0 4px rgba(180,180,180,0.05)}}
+@keyframes frozenCrystal{0%,100%{opacity:.25;filter:brightness(0.9) contrast(1.2)}50%{opacity:.35;filter:brightness(1) contrast(1.3)}}
+@keyframes flowingPulse{0%,100%{opacity:.35;filter:blur(0.5px)}25%{opacity:.5;filter:blur(1px)}50%{opacity:.4;filter:blur(0.8px)}75%{opacity:.45;filter:blur(0.6px)}}
+
+::-webkit-scrollbar{width:0}
+input:focus{outline:none}
+input:-webkit-autofill{-webkit-text-fill-color:rgba(255,255,255,0.5);box-shadow:0 0 0 40px #050505 inset}
+
+.panel{
+  background:rgba(255,255,255,0.025);
+  border:1px solid rgba(255,255,255,0.055);
+  border-radius:16px;
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+.btn{
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.12);
+  background:transparent;
+  color:rgba(255,255,255,0.30);
+  font-family:'DM Mono',monospace;
+  font-size:.42rem;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:border-color .4s,color .4s,background .4s;
+  padding:7px 18px;
+}
+.btn:hover{border-color:rgba(255,255,255,0.26);color:rgba(255,255,255,0.58)}
+.btn.active-c{border-color:rgba(0,209,255,0.42);color:rgba(0,209,255,0.82);background:rgba(0,209,255,0.05)}
+.btn.active-a{border-color:rgba(255,179,71,0.42);color:rgba(255,179,71,0.82);background:rgba(255,179,71,0.05)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+const {useState,useEffect,useRef,useCallback,useMemo} = React;
+
+/* ─── Ambient Particle Field ──────────────────────────────────────── */
+function AmbientField({particleCount = 180, flowMode = false, frozenTime = 0}){
+  const ref = useRef(null);
+  useEffect(()=>{
+    const cv=ref.current, ctx=cv.getContext('2d');
+    let W=cv.width=window.innerWidth, H=cv.height=window.innerHeight;
+    
+    // Multiple layers of particles for depth
+    // Distribute particleCount across layers: 33%, 44%, 23%
+    const baseLayer1 = Math.floor(particleCount * 0.33);
+    const baseLayer2 = Math.floor(particleCount * 0.44);
+    const baseLayer3 = Math.floor(particleCount * 0.23);
+    
+    const layers = [
+      {count:baseLayer1, minR:.15, maxR:.6, minSp:.05, maxSp:.15, minOp:.04, maxOp:.15},  // Far layer
+      {count:baseLayer2, minR:.3, maxR:1.2, minSp:.1, maxSp:.4, minOp:.08, maxOp:.35},    // Mid layer
+      {count:baseLayer3, minR:.5, maxR:1.8, minSp:.2, maxSp:.7, minOp:.12, maxOp:.45},    // Near layer
+    ];
+    
+    const particles = [];
+    layers.forEach(l => {
+      for(let i=0;i<l.count;i++){
+        particles.push({
+          x:Math.random()*W, y:Math.random()*H-H,
+          r:l.minR+Math.random()*(l.maxR-l.minR),
+          sp:l.minSp+Math.random()*(l.maxSp-l.minSp),
+          sw:.08+Math.random()*.18,
+          ph:Math.random()*Math.PI*2,
+          op:l.minOp+Math.random()*(l.maxOp-l.maxOp),
+          maxOp:l.minOp+Math.random()*(l.maxOp-l.minOp),
+          dx:(Math.random()-.5)*32,
+          vx:.002+Math.random()*.004,
+        });
+      }
+    });
+    
+    let af;
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+      particles.forEach(f=>{
+        if(frozenTime > 0){
+          // Silence mode: particles are nearly frozen, just slight drift
+          f.y += f.sp * 0.002;  // Nearly no vertical movement
+          f.x += (Math.sin(f.ph)*f.sw + f.vx) * 0.05;  // Minimal horizontal drift
+          f.ph += 0.0001;  // Almost no phase change
+        } else if(flowMode){
+          // Harmonize mode: flowing movement - faster and more fluid
+          f.y += f.sp * 1.4;  // Gentle upward flow
+          f.x += (Math.sin(f.ph)*f.sw + f.vx) * 1.2;  // Smooth waves across
+          f.ph += 0.012;  // Flowing phase
+        } else {
+          // Normal ambient mode
+          f.y += f.sp;
+          f.x += Math.sin(f.ph)*f.sw + f.vx;
+          f.ph += 0.008;
+        }
+        
+        if(f.y > H+8){f.y = -8; f.x = Math.random()*W;}
+        
+        // Subtle glow variation
+        const glowPhase = Math.sin(f.ph*.5);
+        const currentOp = f.maxOp*(0.6 + glowPhase*0.4);
+        
+        ctx.beginPath();ctx.arc(f.x, f.y, f.r, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(200,220,255,${currentOp})`;
+        ctx.fill();
+        
+        // Faint glow around particle
+        ctx.beginPath();ctx.arc(f.x, f.y, f.r*2.2, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(0,209,255,${currentOp*.15})`;
+        ctx.fill();
+      });
+      af=requestAnimationFrame(draw);
+    }
+    draw();
+    const rs=()=>{W=cv.width=window.innerWidth;H=cv.height=window.innerHeight};
+    window.addEventListener('resize',rs);
+    return()=>{cancelAnimationFrame(af);window.removeEventListener('resize',rs)};
+  },[particleCount, flowMode, frozenTime]);
+  return <canvas ref={ref} style={{position:'fixed',inset:0,zIndex:0,pointerEvents:'none'}}/>;
+}
+
+/* ─── Fiber Sculpture with Emotion-Based Behaviors ──────────────── */
+function FiberSculpture({stress,harmonize,silenced,audioData,currentEmotion,emotionVibe,selectedEmotion,blueMode,shrinkRatio,flowMode,frozenTime,onEnter,onLeave,onClick}){
+  const ref=useRef(null);
+  const phRef=useRef(0);
+  const rafRef=useRef(null);
+
+  useEffect(()=>{
+    const cv=ref.current;
+    const ctx=cv.getContext('2d');
+    const SZ=500; cv.width=SZ; cv.height=SZ;
+    const CX=SZ/2, CY=SZ/2;
+
+    function frame(){
+      // Control time based on frozen state
+      if(frozenTime > 0){
+        // In silence: use frozen timescale - very slow crawl
+        phRef.current += 0.0008;  // Nearly frozen
+      } else if(flowMode){
+        // In harmonize: flowing waves - faster movement
+        phRef.current += 0.018;  // Faster flowing motion
+      } else {
+        // Normal state
+        phRef.current += 0.011;
+      }
+      
+      const t=phRef.current;
+      ctx.clearRect(0,0,SZ,SZ);
+
+      // Emotion-aware breathing and motion
+      let breatheFreq = harmonize ? 0.32 : 0.58;
+      let breatheAmp = harmonize ? (0.042 + stress*0.018) : (0.035 + stress*0.025);
+      
+      // Adjust breathing based on emotion
+      if(emotionVibe === 'sharp-pulse'){  // angry
+        breatheFreq = 1.2;
+        breatheAmp = 0.08;
+      } else if(emotionVibe === 'uneven-pulse'){  // tense
+        breatheFreq = 0.8;
+        breatheAmp = 0.065;
+      } else if(emotionVibe === 'smooth-wave'){  // kind
+        breatheFreq = 0.25;
+        breatheAmp = 0.052;
+      } else if(emotionVibe === 'soft-pulse'){  // friendly
+        breatheFreq = 0.42;
+        breatheAmp = 0.045;
+      }
+      
+      // Blue mode: disable pulsing/jumping
+      if(blueMode){
+        breatheAmp = 0;  // No pulsing, stay contracted
+      }
+      
+      // Frozen state: complete stillness
+      if(frozenTime > 0){
+        breatheAmp = 0;  // No breathing at all
+      }
+      
+      const breath = 1 + breatheAmp * Math.sin(t * breatheFreq);
+      const baseR = 94 * breath * shrinkRatio;  // Apply shrinking ratio
+
+      // More organic strands for chaotic states, smoother for harmonized
+      const STRANDS = harmonize ? 20 : Math.floor(12 + stress*8);
+      
+      for(let s=0; s<STRANDS; s++){
+        const frac = s / STRANDS;
+        const isAmber = !harmonize && frac > 0.52 && stress > 0.35;
+        const isCyan = harmonize || (frac < 0.5);
+
+        // Color based on emotion (prioritize selectedEmotion)
+        let stroke, shadow;
+        if(silenced){
+          // Frozen crystalline gray/white
+          const grayLevel = frozenTime > 0 ? 180 : 140;
+          stroke = `rgba(${grayLevel},${grayLevel},${grayLevel},${0.04 + frac*0.09})`;
+          shadow = `rgba(${grayLevel},${grayLevel},${grayLevel},0.03)`;
+        } else if(selectedEmotion !== undefined && selectedEmotion !== null){
+          // Use selected emotion color (direct emotion click) - with reduced saturation
+          const emotionKeys = ['kind', 'friendly', 'neutral', 'tense', 'angry'];
+          const emotionRGB = EMOTIONS[emotionKeys[selectedEmotion]];
+          if(emotionRGB){
+            const emotionColor = emotionRGB.rgb;
+            const alpha = 0.12 + frac*0.28;
+            stroke = `${emotionColor.slice(0,-1)}, ${alpha})`;
+            shadow = `${emotionColor.slice(0,-1)}, ${alpha*0.35})`;
+          } else {
+            stroke = `rgba(255,255,255,${0.06 + frac*0.2})`;
+            shadow = 'rgba(255,255,255,0.07)';
+          }
+        } else if(currentEmotion){
+          // Use emotion colors from analysis - with softer saturation
+          const emotionRGB = EMOTIONS[currentEmotion];
+          if(emotionRGB){
+            const emotionColor = emotionRGB.rgb;
+            const alpha = 0.12 + frac*0.28;
+            stroke = `${emotionColor.slice(0,-1)}, ${alpha})`;
+            shadow = `${emotionColor.slice(0,-1)}, ${alpha*0.3})`;
+          } else {
+            stroke = `rgba(255,255,255,${0.06 + frac*0.2})`;
+            shadow = 'rgba(255,255,255,0.07)';
+          }
+        } else if(isAmber){
+          const warmth = 0.13 + (stress - 0.35) * 0.58;
+          stroke = `rgba(${255},${179+Math.floor(20*stress)},${71-Math.floor(10*stress)},${Math.min(0.78, warmth)})`;
+          shadow = `rgba(255,179,71,${0.12 + stress*0.08})`;
+        } else if(isCyan){
+          const coolness = harmonize ? (0.25 + frac*0.32) : (0.12 + frac*0.2);
+          stroke = `rgba(0,${200+Math.floor(55*harmonize)},${255},${coolness})`;
+          shadow = `rgba(0,209,255,${0.14 + (harmonize?0.08:0)})`;
+        } else {
+          stroke = `rgba(255,255,255,${0.06 + frac*0.2})`;
+          shadow = 'rgba(255,255,255,0.07)';
+        }
+
+        const phase = (s / STRANDS) * Math.PI * 2;
+        
+        // Emotion-specific winding and vibration
+        let windingBase = harmonize ? 2.4 : 3.2 + stress*2.4;
+        if(emotionVibe === 'sharp-pulse') windingBase = 4.2 + stress*3.0;
+        else if(emotionVibe === 'uneven-pulse') windingBase = 3.6 + Math.sin(t*0.3)*1.5;
+        else if(emotionVibe === 'smooth-wave') windingBase = 2.2;
+        else if(emotionVibe === 'soft-pulse') windingBase = 2.8;
+        
+        const windingVar = Math.sin(t*0.1 + s) * 0.3;
+        const winding = windingBase + windingVar;
+        
+        const ampBase = baseR * (harmonize ? 0.4 : (0.24 + stress*0.28));
+        const ampDyn = ampBase * (0.8 + 0.2*Math.sin(t*0.15 + phase));
+        const amp = frozenTime > 0 ? ampBase * 0.95 : ampDyn;  // Frozen: minimal variation
+
+        // Strong audio reactivity for chaos
+        let audioBoost = 0;
+        if(audioData && audioData.length > 0){
+          const idx = Math.floor((s / STRANDS) * audioData.length);
+          const normalized = audioData[idx] / 255;
+          audioBoost = normalized * (harmonize ? 8 : 40) * (1 + stress);
+        }
+
+        ctx.beginPath();
+        let first = true;
+        for(let d = 0; d <= 362; d += 2){
+          const rad = (d / 360) * Math.PI * 2;
+          
+          // Multiple harmonic layers for organic feel
+          const harmonic1 = Math.sin(winding * rad + phase + t * (harmonize ? 0.24 : (0.52 + stress*1.1)));
+          const harmonic2 = Math.sin((winding*0.67) * rad - phase*0.5 + t * (harmonize ? 0.15 : (0.38 + stress*0.7))) * 0.4;
+          const harmonic3 = Math.sin((winding*1.33) * rad + phase*1.5 + t * 0.08) * 0.2;
+          
+          const r = baseR + (amp + audioBoost) * (harmonic1 + harmonic2 + harmonic3);
+          const px = CX + r * Math.cos(rad + phase*0.28);
+          const py = CY + r * Math.sin(rad + phase*0.28) * 0.72;
+          
+          first ? (ctx.moveTo(px, py), first=false) : ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+
+        const lw = harmonize ? 1.8 : (0.8 + stress*1.2 + audioBoost/18);
+        const finalLw = selectedEmotion !== undefined ? lw * 0.85 : lw;
+        ctx.lineWidth = finalLw;
+        ctx.shadowBlur = harmonize ? 26 : (8 + stress*18 + audioBoost/4);
+        ctx.shadowColor = shadow;
+        ctx.strokeStyle = stroke;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+
+      // Core gradient
+      if(!silenced){
+        const rg=ctx.createRadialGradient(CX,CY,0,CX,CY,baseR*.52);
+        if(harmonize){
+          rg.addColorStop(0,'rgba(0,209,255,0.055)');
+        } else {
+          rg.addColorStop(0,`rgba(255,179,71,${Math.min(.08,stress*.11)})`);
+        }
+        rg.addColorStop(1,'rgba(0,0,0,0)');
+        ctx.fillStyle=rg;ctx.beginPath();ctx.arc(CX,CY,baseR*.52,0,Math.PI*2);ctx.fill();
+      }
+
+      // Center dot
+      ctx.beginPath();ctx.arc(CX,CY,3.5,0,Math.PI*2);
+      ctx.fillStyle=silenced?'rgba(200,200,200,0.3)':harmonize?'rgba(0,209,255,0.55)':'rgba(255,255,255,0.35)';
+      ctx.fill();
+
+      rafRef.current=requestAnimationFrame(frame);
+    }
+    frame();
+    return()=>cancelAnimationFrame(rafRef.current);
+  },[stress,harmonize,silenced,audioData,currentEmotion,emotionVibe,selectedEmotion,blueMode,shrinkRatio,flowMode,frozenTime]);
+
+  return(
+    <canvas
+      ref={ref}
+      style={{
+        width:'100%',height:'100%',cursor:'pointer',display:'block',borderRadius:'50%',
+        animation: (harmonize && !silenced) ? 'spin 16s linear infinite' : 'none',
+        transition: 'animation 0.6s ease'
+      }}
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
+      onClick={onClick}
+    />
+  );
+}
+
+/* ─── Waveform Display (harmonic reconstruction) ──────────────────── */
+function WaveDisplay({wave,color1='rgba(0,209,255,0.6)',color2='rgba(255,179,71,0.5)'}){
+  const ref=useRef(null);
+  useEffect(()=>{
+    if(!wave||!ref.current)return;
+    const cv=ref.current;
+    const ctx=cv.getContext('2d');
+    const W=cv.width=cv.offsetWidth||190;
+    const H=cv.height=52;
+    ctx.clearRect(0,0,W,H);
+
+    // Smooth harmonic version (apply low-pass style blend)
+    const smooth=wave.map((v,i,a)=>{
+      const w=Math.min(3,i,a.length-1-i);
+      if(w===0)return v;
+      let s=0,c=0;
+      for(let j=-w;j<=w;j++){s+=a[i+j];c++;}
+      return s/c;
+    });
+
+    for(let strand=0;strand<2;strand++){
+      ctx.beginPath();
+      smooth.forEach((v,i)=>{
+        const x=(i/(smooth.length-1))*W;
+        const off=strand===0?1:-1;
+        const env=Math.sin((i/smooth.length)*Math.PI);
+        const y=H/2-off*v*(H/2-5)*env;
+        i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      });
+      ctx.strokeStyle=strand===0?color1:color2;
+      ctx.lineWidth=1.4;
+      ctx.shadowBlur=8;
+      ctx.shadowColor=strand===0?'rgba(0,209,255,0.35)':'rgba(255,179,71,0.3)';
+      ctx.stroke();
+      ctx.shadowBlur=0;
+    }
+  },[wave]);
+  return <canvas ref={ref} style={{width:'100%',height:52,display:'block',borderRadius:8,background:'rgba(0,0,0,0.4)'}}/>;
+}
+
+/* ─── Mini live waveform ─────────────────────────────────────────── */
+function MiniWave({data}){
+  const ref=useRef(null);
+  useEffect(()=>{
+    if(!data||!ref.current)return;
+    const cv=ref.current;
+    const ctx=cv.getContext('2d');
+    const W=cv.width=cv.offsetWidth||190;
+    const H=cv.height=38;
+    ctx.clearRect(0,0,W,H);
+    const step=Math.max(1,Math.floor(data.length/(W/2)));
+    const pts=[];
+    for(let i=0;i<data.length;i+=step)pts.push(data[i]);
+    ctx.beginPath();
+    pts.forEach((v,i)=>{
+      const x=(i/(pts.length-1))*W;
+      const y=H-(v/255)*H;
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    });
+    ctx.strokeStyle='rgba(255,179,71,0.65)';
+    ctx.lineWidth=1.2;
+    ctx.shadowBlur=6;
+    ctx.shadowColor='rgba(255,179,71,0.38)';
+    ctx.stroke();
+    ctx.shadowBlur=0;
+  },[data]);
+  return <canvas ref={ref} style={{width:'100%',height:38,display:'block',borderRadius:6,background:'rgba(0,0,0,0.3)'}}/>;
+}
+
+/* ─── Emotion Spectrum Visualization (Artistic Fluid) ────────────── */
+function EmotionSpectrum({stress, harmonize, silenced, sentiment, currentEmotion, emotionRotation, selectedEmotion, onEmotionClick, blueMode, ringColor}){
+  const emotionOrder = ['kind', 'friendly', 'neutral', 'tense', 'angry'];
+  const emotionDisplay = emotionOrder.map(key => EMOTIONS[key]);
+  
+  let highlightIdx = -1;
+  if(currentEmotion && emotionOrder.includes(currentEmotion)){
+    highlightIdx = emotionOrder.indexOf(currentEmotion);
+  }
+  
+  const CX = 200;
+  const CY = 200;
+  const spectrumRadius = 140;
+  
+  // Calculate positions for all emotions
+  const positions = emotionDisplay.map((emotion, idx) => {
+    const angle = (idx / emotionDisplay.length) * Math.PI * 2 - Math.PI / 2;
+    const distance = spectrumRadius;
+    return {
+      x: CX + Math.cos(angle) * distance,
+      y: CY + Math.sin(angle) * distance,
+      angle,
+    };
+  });
+  
+  return (
+    <svg 
+      viewBox="0 0 400 400" 
+      style={{
+        position: 'absolute',
+        inset: -32,
+        width: 'calc(100% + 64px)',
+        height: 'calc(100% + 64px)',
+        pointerEvents: 'auto',
+        zIndex: 2,
+      }}
+    >
+      <defs>
+        {/* Gaussian blur filters for artistic blur effect */}
+        <filter id="softBlur">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="8"/>
+        </filter>
+        <filter id="mediumBlur">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="12"/>
+        </filter>
+        <filter id="heavyBlur">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="18"/>
+        </filter>
+        
+        {/* Fluid gradient definitions - muted saturation */}
+        <radialGradient id="kindGradient" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="rgba(255,235,120,0.35)" />
+          <stop offset="100%" stopColor="rgba(255,235,120,0.05)" />
+        </radialGradient>
+        <radialGradient id="friendlyGradient">
+          <stop offset="0%" stopColor="rgba(255,200,130,0.35)" />
+          <stop offset="100%" stopColor="rgba(255,200,130,0.05)" />
+        </radialGradient>
+        <radialGradient id="neutralGradient">
+          <stop offset="0%" stopColor="rgba(210,210,210,0.35)" />
+          <stop offset="100%" stopColor="rgba(210,210,210,0.05)" />
+        </radialGradient>
+        <radialGradient id="tenseGradient">
+          <stop offset="0%" stopColor="rgba(150,170,240,0.35)" />
+          <stop offset="100%" stopColor="rgba(150,170,240,0.05)" />
+        </radialGradient>
+        <radialGradient id="angryGradient">
+          <stop offset="0%" stopColor="rgba(100,120,200,0.35)" />
+          <stop offset="100%" stopColor="rgba(100,120,200,0.05)" />
+        </radialGradient>
+      </defs>
+      
+      {/* Flowing center nucleus */}
+      <circle
+        cx={CX}
+        cy={CY}
+        r={35}
+        fill={`url(#${emotionOrder[selectedEmotion] || 'neutral'}Gradient)`}
+        opacity={0.4}
+        style={{
+          filter: `drop-shadow(0 0 ${20 + selectedEmotion * 5}px ${emotionDisplay[selectedEmotion]?.rgb})`,
+          transition: 'all 0.8s ease',
+        }}
+      />
+      
+      
+      {/* Outer spectrum ring (slow rotation) with dynamic color */}
+      <g style={{
+        animation: (silenced) ? 'none' : (harmonize ? 'spinFast 16s linear infinite' : 'spin 28s linear infinite'),
+        transformOrigin: '200px 200px',
+        transition: 'animation 0.3s ease',
+      }}>
+      {/* Ring color indicator - visual bar background */}
+      <circle
+        cx={CX}
+        cy={CY}
+        r={spectrumRadius + 8}
+        fill="none"
+        stroke={ringColor === 'orange-kind' ? 'rgb(255,215,0)' : 
+                ringColor === 'orange-friendly' ? 'rgb(255,179,71)' : 
+                ringColor === 'amber' ? 'rgba(255,179,71,0.5)' :
+                ringColor === 'blue' ? 'rgb(65,105,225)' : 'rgba(0,209,255,0.3)'}
+        strokeWidth="2"
+        opacity={ringColor.includes('orange') ? 0.7 : 0.4}
+        style={{
+          transition: 'all 0.8s ease',
+          filter: ringColor.includes('orange') ? `drop-shadow(0 0 12px ${ringColor === 'orange-kind' ? 'rgb(255,215,0)' : 'rgb(255,179,71)'})` : 'none',
+        }}
+      />
+        {emotionDisplay.map((emotion, idx) => {
+          const isActive = idx === highlightIdx;
+          const isSelected = idx === selectedEmotion;
+          const isKind = idx === 0;
+          const isFriendly = idx === 1;
+          const isWarmEmotion = isKind || isFriendly;
+          const radius = isSelected ? 26 : (isActive ? 22 : 16);
+          const pos = positions[idx];
+          
+          return (
+            <g 
+              key={emotion.label}
+              onClick={() => onEmotionClick && onEmotionClick(idx)}
+              style={{ cursor: 'pointer' }}
+            >
+              {/* Blurred artistic halo background */}
+              <circle
+                cx={pos.x}
+                cy={pos.y}
+                r={radius + 32}
+                fill={emotion.rgb}
+                opacity={isSelected ? 0.18 : (isActive ? 0.1 : 0.04)}
+                style={{
+                  transition: 'all 0.6s ease',
+                }}
+                filter={isSelected ? 'url(#heavyBlur)' : (isActive ? 'url(#mediumBlur)' : 'url(#softBlur)')}
+              />
+              
+              {/* Aura waves (fluid effect) - Kind gets slow wave, Friendly gets faster pulse */}
+              <circle
+                cx={pos.x}
+                cy={pos.y}
+                r={radius + 18}
+                fill="none"
+                stroke={emotion.rgb}
+                strokeWidth="1"
+                opacity={isSelected ? 0.4 : 0.05}
+                style={{
+                  animation: isSelected 
+                    ? (isKind ? 'emotionPulse 1.2s ease-in-out infinite' : (isFriendly ? 'emotionPulse 0.7s ease-in-out infinite' : 'emotionPulse 0.8s ease-in-out infinite'))
+                    : 'none',
+                  transition: 'all 0.6s ease',
+                }}
+              />
+              
+              {/* Mid glow layer */}
+              <circle
+                cx={pos.x}
+                cy={pos.y}
+                r={radius + 10}
+                fill={emotion.rgb}
+                opacity={isSelected ? (isKind ? 0.3 : 0.35) : (isActive ? 0.15 : 0.04)}
+                style={{
+                  filter: isSelected ? `drop-shadow(0 0 ${isKind ? 16 : 20}px ${emotion.rgb})` : (isActive ? `drop-shadow(0 0 12px ${emotion.rgb})` : 'none'),
+                  transition: 'all 0.6s ease',
+                }}
+              />
+              
+              {/* Core emotion circle (clickable) */}
+              <circle
+                cx={pos.x}
+                cy={pos.y}
+                r={radius}
+                fill={emotion.rgb}
+                opacity={isSelected ? 1 : (isActive ? 0.8 : 0.4)}
+                style={{
+                  animation: isSelected 
+                    ? (isKind ? 'emotionPulse 1.0s ease-in-out infinite' : (isFriendly ? 'emotionPulse 0.6s ease-in-out infinite' : 'emotionPulse 0.6s ease-in-out infinite'))
+                    : (isActive ? `emotionPulse 1.2s ease-in-out infinite` : 'none'),
+                  transition: 'all 0.6s ease',
+                  filter: isSelected ? `drop-shadow(0 0 ${isKind ? 20 : 24}px ${emotion.rgb})` : 'none',
+                }}
+              />
+              
+              {/* Inner bright core - Kind is subtle, Friendly is bright */}
+              <circle
+                cx={pos.x}
+                cy={pos.y}
+                r={radius * 0.6}
+                fill="white"
+                opacity={isSelected ? (isKind ? 0.25 : 0.4) : (isActive ? 0.2 : 0.1)}
+                style={{
+                  transition: 'all 0.6s ease',
+                }}
+              />
+              
+              {/* Label */}
+              <text
+                x={pos.x}
+                y={pos.y + radius + 32}
+                textAnchor="middle"
+                fontSize="11"
+                fontFamily="'DM Mono', monospace"
+                letterSpacing="2"
+                fill={emotion.rgb}
+                opacity={isSelected ? 1 : (isActive ? 0.7 : 0.4)}
+                style={{
+                  transition: 'all 0.6s ease, opacity 0.6s ease',
+                  textTransform: 'uppercase',
+                  fontWeight: isWarmEmotion && isSelected ? 'bold' : 'normal',
+                  fontSize: isWarmEmotion && isSelected ? '12' : '11',
+                  pointerEvents: 'none',
+                }}
+              >
+                {emotion.label}
+              </text>
+            </g>
+          );
+        })}
+      </g>
+    </svg>
+  );
+}
+
+/* ─── Advanced Emotion Mapping System ────────────────────────────── */
+const EMOTIONS = {
+  kind: { color: '#FFD700', temp: 'warm', vibe: 'smooth-wave', rgb: 'rgb(255,215,0)', label: 'Kind', desc: 'Deep warmth' },
+  friendly: { color: '#FFB347', temp: 'warm', vibe: 'soft-pulse', rgb: 'rgb(255,179,71)', label: 'Friendly', desc: 'Gentle care' },
+  neutral: { color: '#808080', temp: 'neutral', vibe: 'steady-rhythm', rgb: 'rgb(128,128,128)', label: 'Neutral', desc: 'Balanced' },
+  tense: { color: '#4169E1', temp: 'cool', vibe: 'uneven-pulse', rgb: 'rgb(65,105,225)', label: 'Tense', desc: 'Alert state' },
+  angry: { color: '#00008B', temp: 'cold', vibe: 'sharp-pulse', rgb: 'rgb(0,0,139)', label: 'Angry', desc: 'Acute charge' },
+};
+
+/* Analyze audio quality based on voice characteristics */
+function analyzeAudioQuality(text, volumeLevel = 0.5, pitchHeight = 0.5, speechRate = 0.5){
+  // Quality factors:
+  // - Consistent volume (not too loud or too soft)
+  // - Natural pitch variation (not monotone)
+  // - Moderate speech rate (not too fast or slow)
+  // - Clear pronunciation (word spacing)
+  
+  let qualityScore = 0.5;
+  
+  // Volume consistency: optimal around 0.4-0.7
+  const volumeOptimal = Math.abs(volumeLevel - 0.55) < 0.2 ? 1 : Math.max(0, 1 - Math.abs(volumeLevel - 0.55) * 0.8);
+  
+  // Pitch variation: good if not at extremes
+  const pitchOptimal = pitchHeight > 0.15 && pitchHeight < 0.85 ? 1 : 0.6;
+  
+  // Speech rate: optimal around 0.4-0.7
+  const rateOptimal = Math.abs(speechRate - 0.55) < 0.2 ? 1 : Math.max(0, 1 - Math.abs(speechRate - 0.55) * 0.8);
+  
+  // Combine factors
+  qualityScore = (volumeOptimal * 0.3 + pitchOptimal * 0.35 + rateOptimal * 0.35);
+  
+  return Math.max(0, Math.min(1, qualityScore));
+}
+
+/* Tone Analysis: Text Content + Voice Pattern → Emotion */
+function analyzeTonePattern(text, volumeLevel = 0.5, pitchHeight = 0.5, speechRate = 0.5){
+  const textLower = text.toLowerCase();
+  let detectedVolume = volumeLevel;
+  let detectedPitch = pitchHeight;
+  let detectedRate = speechRate;
+  
+  // Punctuation analysis
+  const hasExclamations = (text.match(/!/g) || []).length;
+  const hasQuestions = (text.match(/\?/g) || []).length;
+  const hasCaps = text.length > 0 ? (text.match(/[A-Z]/g) || []).length / text.length : 0;
+  const repetitions = (text.match(/(.)\1{2,}/g) || []).length;
+  
+  // Voice parameter adjustments based on punctuation
+  if(hasExclamations > 1) detectedVolume = Math.min(1, detectedVolume + 0.3);
+  if(hasCaps > 0.5) { detectedVolume += 0.2; detectedPitch += 0.15; }
+  if(hasQuestions > 2) detectedRate = Math.max(0, detectedRate - 0.2);
+  if(repetitions > 0) detectedVolume = Math.max(0, detectedVolume - 0.2);
+  
+  // Content-based emotion analysis
+  const kindWords = ['love', 'care', 'warm', 'gentle', 'soft', 'sweet', 'kind', 'tender', 'peaceful', 'calm', 'serene', 'beautiful'];
+  const friendlyWords = ['hello', 'hi', 'thanks', 'appreciate', 'enjoy', 'lovely', 'nice', 'good', 'great', 'wonderful', 'happy', 'friend'];
+  const tenseWords = ['worry', 'concerned', 'anxious', 'tense', 'stressed', 'uncertain', 'nervous', 'afraid', 'careful', 'alert'];
+  const angryWords = ['hate', 'angry', 'furious', 'mad', 'disgusted', 'awful', 'terrible', 'horrible', 'despise', 'rage', 'damn', 'hell'];
+  const negativeWords = ['no', 'not', 'never', 'impossible', 'wrong', 'bad', 'sad', 'sorry', 'lost', 'broken'];
+  const positiveWords = ['yes', 'good', 'great', 'wonderful', 'amazing', 'beautiful', 'perfect', 'love', 'happy', 'joy'];
+  
+  // Count keyword matches
+  const kindCount = kindWords.filter(w => textLower.includes(w)).length;
+  const friendlyCount = friendlyWords.filter(w => textLower.includes(w)).length;
+  const tenseCount = tenseWords.filter(w => textLower.includes(w)).length;
+  const angryCount = angryWords.filter(w => textLower.includes(w)).length;
+  const negativeCount = negativeWords.filter(w => textLower.includes(w)).length;
+  const positiveCount = positiveWords.filter(w => textLower.includes(w)).length;
+  
+  // Determine emotion based on both voice parameters AND content
+  let toneType = 'neutral';
+  
+  // Strong content signals override pure volume/pitch
+  if(angryCount > 0 || (hasExclamations > 2 && angryCount >= 0)) {
+    toneType = 'angry';
+  } else if(tenseCount > 0 || (hasQuestions > 1 && tenseCount >= 0)) {
+    toneType = 'tense';
+  } else if(kindCount > 0 && positiveCount > 0) {
+    toneType = 'kind';
+  } else if(friendlyCount > 0 || (positiveCount > tenseCount && friendlyCount >= 0)) {
+    toneType = 'friendly';
+  } else if(detectedVolume > 0.7 && detectedPitch > 0.65) {
+    toneType = 'angry';
+  } else if(detectedRate > 0.7 && detectedVolume > 0.55) {
+    toneType = 'tense';
+  } else if(detectedRate < 0.4 && detectedVolume < 0.4) {
+    toneType = 'kind';
+  } else if(detectedVolume > 0.45 && detectedPitch > 0.4 && detectedRate < 0.6) {
+    toneType = 'friendly';
+  }
+  
+  return { toneType, detectedVolume, detectedPitch, detectedRate };
+}
+
+/* Intent Detection: Tone → Intent */
+function detectIntent(text, toneType){
+  const t = text.toLowerCase();
+  const sincere = ['really','truly','genuinely','honestly','absolutely','always','please','help','care','support','understand','feel','with you'];
+  const sarcasm = ['sure','yeah right','right','obviously','apparently','somehow'];
+  
+  const sincereCount = sincere.filter(w => t.includes(w)).length;
+  const sarcasmCount = sarcasm.filter(w => t.includes(w)).length;
+  
+  let intent = 'neutral', intentLabel = 'Neutral presence', intentColor = EMOTIONS.neutral;
+  if(sincereCount > sarcasmCount && sincereCount > 0){
+    intent = 'sincere'; intentLabel = 'Sincere support detected'; intentColor = EMOTIONS.kind;
+  } else if(sarcasmCount > sincereCount && sarcasmCount > 0){
+    intent = 'sarcastic'; intentLabel = 'Pretend friendly sensed'; intentColor = EMOTIONS.tense;
+  } else if(toneType === 'kind' || toneType === 'friendly'){
+    intent = 'genuine'; intentLabel = 'Authentic warmth'; intentColor = EMOTIONS.friendly;
+  }
+  
+  return { intent, intentLabel, intentColor };
+}
+
+/* Comprehensive Emotion Analysis with OpenAI API */
+const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
+const OPENAI_KEY_STORAGE = 'echoPulseOpenAIKey';
+let openAIKeyCache = null;
+let openAIKeyPromptDismissed = false;
+
+function getOpenAIKey(){
+  if(openAIKeyCache) return openAIKeyCache;
+
+  const savedKey = sessionStorage.getItem(OPENAI_KEY_STORAGE);
+  if(savedKey){
+    openAIKeyCache = savedKey;
+    return openAIKeyCache;
+  }
+
+  if(openAIKeyPromptDismissed) return null;
+
+  const enteredKey = window.prompt('Paste your OpenAI API key once for this session.');
+
+  if(!enteredKey){
+    openAIKeyPromptDismissed = true;
+    return null;
+  }
+
+  const cleanedKey = enteredKey.trim();
+  if(!cleanedKey){
+    openAIKeyPromptDismissed = true;
+    return null;
+  }
+
+  openAIKeyCache = cleanedKey;
+  sessionStorage.setItem(OPENAI_KEY_STORAGE, cleanedKey);
+  return openAIKeyCache;
+}
+
+async function analyzeEmotionWithOpenAI(text){
+  const OPENAI_API_KEY = getOpenAIKey();
+  if(!OPENAI_API_KEY) return null;
+
+  try{
+    const response = await fetch(OPENAI_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          {
+            role: 'system',
+            content: `You are an expert emotion analyst. Analyze the emotion of given text and return a JSON result.
+            You MUST return ONLY the JSON (no other content):
+            {
+              "emotion": "kind|friendly|neutral|tense|angry",
+              "sentimentScore": 0-1 (1=extremely positive, 0=extremely negative, 0.5=neutral),
+              "intensity": 0-1 (emotional intensity level),
+              "intent": "sincere|sarcastic|neutral",
+              "intentLabel": "description of emotional intent",
+              "quality": 0-1 (speech quality score based on tone, rhythm, clarity)
+            }`
+          },
+          {
+            role: 'user',
+            content: `Analyze the emotion in this text: "${text}"`
+          }
+        ],
+        temperature: 0.7,
+      }),
+    });
+
+    if(!response.ok){
+      console.error('OpenAI API error:', response.status);
+      if(response.status === 401){
+        sessionStorage.removeItem(OPENAI_KEY_STORAGE);
+        openAIKeyCache = null;
+        openAIKeyPromptDismissed = false;
+      }
+      return null;
+    }
+
+    const data = await response.json();
+    const content = data.choices[0].message.content;
+
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if(!jsonMatch) return null;
+
+    const analysisResult = JSON.parse(jsonMatch[0]);
+
+    const emotion = analysisResult.emotion || 'neutral';
+    const emotionObj = EMOTIONS[emotion] || EMOTIONS.neutral;
+    const qualityScore = analysisResult.quality || 0.5;
+
+    return {
+      emotion,
+      emotionData: emotionObj,
+      label: emotionObj.label,
+      desc: emotionObj.desc,
+      temp: emotionObj.temp,
+      vibe: emotionObj.vibe,
+      intent: analysisResult.intent,
+      intentLabel: analysisResult.intentLabel,
+      intentColor: emotionObj,
+      sentimentScore: analysisResult.sentimentScore,
+      intensity: analysisResult.intensity,
+      score: analysisResult.intensity,
+      quality: qualityScore,
+    };
+  }catch(err){
+    console.error('OpenAI Analysis Error:', err);
+    return null;
+  }
+}
+
+/* Fallback: Comprehensive Emotion Analysis (local) */
+function analyzeEmotionFull(text, volumeLevel = 0.5, pitchHeight = 0.5, speechRate = 0.5){
+  const toneAnalysis = analyzeTonePattern(text, volumeLevel, pitchHeight, speechRate);
+  const intentAnalysis = detectIntent(text, toneAnalysis.toneType);
+  const emotion = EMOTIONS[toneAnalysis.toneType];
+  const qualityScore = analyzeAudioQuality(text, volumeLevel, pitchHeight, speechRate);
+  
+  return {
+    emotion: toneAnalysis.toneType,
+    emotionData: emotion,
+    toneAnalysis,
+    intent: intentAnalysis.intent,
+    intentLabel: intentAnalysis.intentLabel,
+    intentColor: intentAnalysis.intentColor,
+    label: emotion.label,
+    desc: emotion.desc,
+    temp: emotion.temp,
+    vibe: emotion.vibe,
+    score: Math.min(1, Math.abs(toneAnalysis.detectedVolume)),
+    quality: qualityScore,
+  };
+}
+
+/* ─── App ────────────────────────────────────────────────────────── */
+function App(){
+  const [stress,setStress]=useState(.22);
+  const [harmonize,setHarmonize]=useState(false);
+  const [silenced,setSilenced]=useState(false);
+  const [ripple,setRipple]=useState(0);
+  const [micActive,setMicActive]=useState(false);
+  const [audioData,setAudioData]=useState(null);
+  const [sentiment,setSentiment]=useState(null);
+  const [empathyText,setEmpathyText]=useState('');
+  const [bgTone,setBgTone]=useState('');
+  const [statusMsg,setStatusMsg]=useState('');
+  const [statusKey,setStatusKey]=useState(0);
+  const [uploadWave,setUploadWave]=useState(null);
+  const [uploadName,setUploadName]=useState('');
+  const [currentEmotion,setCurrentEmotion]=useState(null);
+  const [emotionVibe,setEmotionVibe]=useState(null);
+  const [emotionRotation,setEmotionRotation]=useState(0);
+  const [selectedEmotion,setSelectedEmotion]=useState(2);  // Start with neutral (index 2)
+  const [blueMode,setBlueMode]=useState(false);  // Tense/Angry mode
+  const [particleCount,setParticleCount]=useState(180);  // Base particle count
+  const [rotationSpeed,setRotationSpeed]=useState(1);  // 1 = normal, 0.3 = slow
+  const [shrinkRatio,setShrinkRatio]=useState(1);  // 1 = normal size, <1 = shrinking
+  const [emotionField,setEmotionField]=useState(0);  // Ripple trigger counter
+  const [harmonizeIntensity,setHarmonizeIntensity]=useState(0);  // Harmonize visual feedback
+  const [flowMode,setFlowMode]=useState(false);  // Harmonize flow mode (vs silence)
+  const [frozenTime,setFrozenTime]=useState(0);  // Frozen time for silence effect
+  const [ringColor,setRingColor]=useState('cyan');  // Outer ring color: 'cyan', 'amber', 'orange-kind', 'orange-friendly'
+  const [stressLocked,setStressLocked]=useState(false);  // Lock stress value in blue mode
+  const [lockedStress,setLockedStress]=useState(0.22);  // The locked stress value
+  const [audioQuality,setAudioQuality]=useState(0.5);  // Audio quality score (0-1) based on voice tone
+
+  const micStreamRef=useRef(null);
+  const analyserRef=useRef(null);
+  const audioCtxRef=useRef(null);
+  const afMicRef=useRef(null);
+  const stressIntervalRef=useRef(null);
+  const speechRecogRef=useRef(null);
+  const recognitionIntervalRef=useRef(null);
+
+  /* Drift stress */
+  useEffect(()=>{
+    stressIntervalRef.current=setInterval(()=>{
+      if(!stressLocked && !harmonize && !silenced && !blueMode){  // Don't drift if locked or in special modes
+        setStress(s=>Math.max(.1,Math.min(.88,s+(Math.random()-.47)*.038)));
+      }
+    },2000);
+    return()=>clearInterval(stressIntervalRef.current);
+  },[harmonize,silenced,blueMode,stressLocked]);
+
+  /* Emotion spectrum rotation animation */
+  useEffect(()=>{
+    let af;
+    let time = 0;
+    const animate = () => {
+      time += 0.5 * rotationSpeed;
+      setEmotionRotation(time);
+      af = requestAnimationFrame(animate);
+    };
+    af = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(af);
+  },[rotationSpeed]);
+
+  function showStatus(msg){
+    setStatusMsg(msg);
+    setStatusKey(k=>k+1);
+  }
+
+  /* Mic toggle with Speech Recognition */
+  const toggleMic=useCallback(async()=>{
+    if(micActive){
+      micStreamRef.current?.getTracks().forEach(t=>t.stop());
+      cancelAnimationFrame(afMicRef.current);
+      audioCtxRef.current?.close();
+      if(speechRecogRef.current){
+        speechRecogRef.current.stop();
+      }
+      if(recognitionIntervalRef.current){
+        clearInterval(recognitionIntervalRef.current);
+      }
+      setMicActive(false); setAudioData(null);
+      showStatus('Sonic field released.');
+      return;
+    }
+    try{
+      // Mutual exclusion: Turn off other modes when enabling mic
+      setHarmonize(false);  // Turn off Harmonize
+      setSilenced(false);   // Turn off Silence
+      
+      // Initialize speech recognition
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if(!SpeechRecognition){
+        showStatus('Speech recognition not supported in your browser.');
+        return;
+      }
+      
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+      
+      let finalTranscript = '';
+      
+      recognition.onstart = () => {
+        showStatus('◉ Listening and analyzing your voice…');
+      };
+      
+      recognition.onresult = async (event) => {
+        let interimTranscript = '';
+        for(let i = event.resultIndex; i < event.results.length; i++){
+          const transcript = event.results[i][0].transcript;
+          if(event.results[i].isFinal){
+            finalTranscript += transcript + ' ';
+          } else {
+            interimTranscript += transcript;
+          }
+        }
+        
+        // If we have final transcript, analyze it
+        if(finalTranscript.trim()){
+          const textToAnalyze = finalTranscript.trim();
+          showStatus(`Analyzing: "${textToAnalyze}"`);
+          
+          // Call OpenAI analysis
+          const analysis = await analyzeEmotionWithOpenAI(textToAnalyze);
+          
+          if(analysis){
+            setSentiment(analysis);
+            setCurrentEmotion(analysis.emotion);
+            setEmotionVibe(analysis.vibe);
+            setBgTone(analysis.temp);
+            
+            const emotionIntensity = analysis.intensity || analysis.score || 0.5;
+            const intensityPercent = Math.round(emotionIntensity * 100);
+            const msg = `Voice Analysis: ${analysis.intentLabel}. ${analysis.label} - Intensity: ${intensityPercent}%`;
+            showStatus(msg);
+            
+            // Auto-click emotion button
+            const emotionIndex = ['kind', 'friendly', 'neutral', 'tense', 'angry'].indexOf(analysis.emotion);
+            if(emotionIndex >= 0){
+              handleEmotionClick(emotionIndex);
+            }
+            
+            finalTranscript = '';  // Reset
+            setTimeout(()=>{
+              setBgTone('');
+              setCurrentEmotion(null);
+              setEmotionVibe(null);
+            }, 5000);
+          }
+        }
+      };
+      
+      recognition.onerror = (event) => {
+        showStatus(`Speech error: ${event.error}`);
+      };
+      
+      recognition.onend = () => {
+        if(micActive){
+          // Restart if still active
+          recognition.start();
+        }
+      };
+      
+      speechRecogRef.current = recognition;
+      recognition.start();
+      
+      // Also set up audio stream for visual feedback
+      const stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+      micStreamRef.current=stream;
+      const actx=new(window.AudioContext||window.webkitAudioContext)();
+      audioCtxRef.current=actx;
+      const analyser=actx.createAnalyser();
+      analyser.fftSize=2048;  // Larger FFT for better time-domain resolution
+      analyserRef.current=analyser;
+      const source=actx.createMediaStreamSource(stream);
+      source.connect(analyser);
+      
+      // Two data arrays: frequency for visuals, time-domain for volume
+      const freqBuf=new Uint8Array(analyser.frequencyBinCount);
+      const timeBuf=new Uint8Array(analyser.fftSize);
+      
+      // Peak tracking for post-speech hold
+      let peakStress = 0.10;  // Track maximum volume reached
+      let lastSoundTime = Date.now();
+      const SPEECH_END_THRESHOLD = 400;  // 400ms of silence = speech ended
+      const VOLUME_THRESHOLD = 0.12;  // Detect significant sound
+      
+      function poll(){
+        // Get frequency data for audio visualization
+        analyser.getByteFrequencyData(freqBuf);
+        setAudioData([...freqBuf]);
+        
+        // Get time-domain data for volume calculation
+        analyser.getByteTimeDomainData(timeBuf);
+        
+        // Calculate RMS (Root Mean Square) for true volume level
+        let sum = 0;
+        for(let i = 0; i < timeBuf.length; i++){
+          const normalized = (timeBuf[i] - 128) / 128;
+          sum += normalized * normalized;
+        }
+        const rms = Math.sqrt(sum / timeBuf.length);
+        
+        // Map RMS to stress value - BALANCED sensitivity
+        // Sound volume directly correlates to bar height
+        // Quiet voice → low stress, Loud voice → high stress
+        const volumeLevel = Math.pow(rms, 0.7) * 2.2;  // Balanced curve: linear-ish response to volume
+        const newStress = Math.max(0.10, Math.min(0.90, volumeLevel));
+        
+        // Detect if speech is happening
+        if(newStress > VOLUME_THRESHOLD){
+          // Speech detected - real-time tracking
+          lastSoundTime = Date.now();
+          peakStress = Math.max(peakStress, newStress);  // Track peak
+          setStress(newStress);  // Show current volume
+        } else {
+          // Silence or low noise
+          const silenceDuration = Date.now() - lastSoundTime;
+          if(silenceDuration < SPEECH_END_THRESHOLD){
+            // Speech might still continue - show real-time
+            setStress(newStress);
+          } else {
+            // Speech has ended - hold peak value
+            setStress(peakStress);
+          }
+        }
+        
+        setAudioQuality(Math.min(1, rms * 2.0));  // Audio quality based on volume
+        
+        afMicRef.current=requestAnimationFrame(poll);
+      }
+      poll(); 
+      setMicActive(true);
+    }catch(e){
+      showStatus('Microphone access denied.');
+    }
+  },[micActive]);
+
+  /* Harmonize */
+  function handleHarmonize(){
+    setHarmonize(h=>{
+      const next=!h;
+      // Mutual exclusion: Turn off other modes when enabling this
+      if(next){
+        setSilenced(false);  // Turn off Silence
+        setMicActive(false); // Turn off Mic
+        micStreamRef.current?.getTracks().forEach(t=>t.stop());
+        cancelAnimationFrame(afMicRef.current);
+        audioCtxRef.current?.close();
+      }
+      setHarmonizeIntensity(1);  // Trigger visual effect
+      setFlowMode(next);  // Enable flowing animations in Harmonize mode
+      setStressLocked(false);  // Unlock stress
+      if(next){
+        setRotationSpeed(2.0);  // Faster rotation for flowing effect
+        setRingColor('cyan');  // Set ring to cyan for harmonize
+      } else {
+        setRotationSpeed(1);  // Return to normal
+        setFlowMode(false);  // Disable flowing animations
+        setRingColor('cyan');  // Keep cyan
+      }
+      setTimeout(()=>setHarmonizeIntensity(0), 2000);
+      if(next){
+        setStress(.10);
+        showStatus('Flowing ripples of peace. Currents carry tension away.');
+      }
+      else {
+        showStatus('Harmonic field released. Returning to raw sensing…');
+      }
+      return next;
+    });
+  }
+
+  /* Silence click */
+  function handleSculptureClick(){
+    setSilenced(s=>{
+      const next=!s;
+      setEmotionField(f => f + 1);
+      // Mutual exclusion: Turn off other modes when enabling this
+      if(next){
+        setHarmonize(false);  // Turn off Harmonize
+        setMicActive(false); // Turn off Mic
+        micStreamRef.current?.getTracks().forEach(t=>t.stop());
+        cancelAnimationFrame(afMicRef.current);
+        audioCtxRef.current?.close();
+      }
+      setFlowMode(false);  // Disable flowing animations when entering Silence
+      setStressLocked(false);  // Unlock stress
+      if(next){
+        setStress(.04);
+        setRotationSpeed(0);  // Freeze all rotation - complete stillness
+        setFrozenTime(Date.now());  // Freeze all motion at this timestamp
+        setRingColor('cyan');  // Set ring to cyan for silence
+        showStatus('Silence. All motion crystallizes. Complete stillness within.');
+      }
+      else {
+        setRotationSpeed(1);  // Return to normal rotation
+        setFrozenTime(0);  // Release frozen state
+        setRingColor('cyan');  // Reset to cyan
+        showStatus('Threshold crossed. Returning to sensitivity…');
+      }
+      return next;
+    });
+  }
+
+  /* Hover ripple */
+  function handleHoverEnter(){
+    setRipple(r=>r+1);
+  }
+
+  /* Emotion Click Handler */
+  function handleEmotionClick(idx){
+    const emotionKeys = ['kind', 'friendly', 'neutral', 'tense', 'angry'];
+    const selectedEmotionName = emotionKeys[idx];
+    const isBlueEmotion = selectedEmotionName === 'tense' || selectedEmotionName === 'angry';
+    const isAlreadyShrunken = shrinkRatio < 0.9;
+    const isSameBlueEmotion = selectedEmotion === idx && isBlueEmotion && blueMode;
+    
+    // Emit emotional field ripple
+    setEmotionField(f => f + 1);
+    
+    // If clicking the SAME blue button again while already shrunken, restore instead
+    if(isSameBlueEmotion && isAlreadyShrunken){
+      setSelectedEmotion(idx);
+      setCurrentEmotion(selectedEmotionName);
+      setEmotionVibe(EMOTIONS[selectedEmotionName].vibe);
+      setShrinkRatio(1);  // Restore to normal size
+      setBgTone('');  // Clear background glow
+      setRingColor('cyan');  // Reset ring to cyan when restoring
+      setBlueMode(false);  // Exit blue mode
+      setStressLocked(false);  // Unlock stress
+      showStatus(`${selectedEmotionName} released. Shape restored to equilibrium.`);
+      return;
+    }
+    
+    setSelectedEmotion(idx);
+    setCurrentEmotion(selectedEmotionName);
+    setEmotionVibe(EMOTIONS[selectedEmotionName].vibe);
+    
+    // Handle stress/motion state based on emotion
+    if(selectedEmotionName === 'neutral'){
+      // WHITE BUTTON: static display
+      setSilenced(false);  // Don't auto-trigger Silence
+      setHarmonize(false);  // Don't auto-trigger Harmonize
+      setStress(0.12);  // Increase to 12% for visibility
+      setLockedStress(0.12);  // Lock this value
+      setBlueMode(false);
+      setStressLocked(true);  // Lock stress to show consistent bar
+      setRotationSpeed(1);  // Normal rotation
+      setShrinkRatio(1);  // Normal size
+      setParticleCount(180);  // Normal particles
+      setBgTone('');  // Clear background glow
+      setRingColor('cyan');  // Reset to default cyan
+      showStatus('Crystalline stillness. All motion frozen in silence.');
+    } else if(selectedEmotionName === 'kind' || selectedEmotionName === 'friendly'){
+      // WARM BUTTONS: show warmth, but don't auto-trigger Harmonize
+      setSilenced(false);
+      setHarmonize(false);  // Don't auto-trigger Harmonize - user must click the button
+      setStress(selectedEmotionName === 'kind' ? 0.30 : 0.40);  // Kind 30%, Friendly 40%
+      setBlueMode(false);
+      setLockedStress(selectedEmotionName === 'kind' ? 0.30 : 0.40);  // Lock this value
+      setStressLocked(true);  // Lock stress to show consistent bar
+      setRotationSpeed(1);  // Normal rotation speed
+      setShrinkRatio(1);  // Normal size
+      setParticleCount(180);  // Normal particles
+      setBgTone('light');  // Add warm white glow background
+      // Set ring color based on emotion - distinguish Kind from Friendly
+      setRingColor(selectedEmotionName === 'kind' ? 'orange-kind' : 'orange-friendly');
+      const warmMsg = selectedEmotionName === 'kind' 
+        ? 'Like plum blossoms opening. Deep, quiet warmth.'
+        : 'Gentle current flowing inward. Soft embrace.';
+      showStatus(warmMsg);
+      // Auto-fade background after 5 seconds
+      setTimeout(()=>setBgTone(''), 5000);
+    } else if(isBlueEmotion){
+      // BLUE BUTTONS: disable pulsing, increase particles, gradually shrink
+      setSilenced(false);
+      setHarmonize(false);
+      setBlueMode(true);  // Enter blue mode
+      setRotationSpeed(1);  // Normal rotation speed for blue
+      setParticleCount(350);  // Increase particles significantly
+      setBgTone('');  // Clear any background glow for blue mode
+      setRingColor('blue');  // Set ring to blue for tense/angry
+      
+      // Set stress and lock it
+      if(selectedEmotionName === 'tense'){
+        setStress(0.38);  // Moderate tension - shorter bar
+        setLockedStress(0.38);  // Lock this value
+        showStatus('Tension crystallizes. Center contracts, aware and alert.');
+      } else {
+        setStress(0.88);  // Intense anger - much longer bar
+        setLockedStress(0.88);  // Lock this value
+        showStatus('Intensity peaks. Shape shrinks inward—all energy condensed.');
+      }
+      setStressLocked(true);  // Lock stress from drifting
+      
+      // Start gradual shrinking animation
+      let shrinkTime = 1;
+      const shrinkInterval = setInterval(()=>{
+        setShrinkRatio(r => Math.max(0.55, r - 0.02));  // Gradually shrink to 55% of original
+        shrinkTime++;
+        if(shrinkTime > 22) clearInterval(shrinkInterval);
+      }, 100);
+    }
+  }
+
+  /* Empathy */
+  async function handleEmpathy(e){
+    e.preventDefault();
+    if(!empathyText.trim())return;
+    
+    showStatus('Analyzing emotional resonance with AI…');
+    
+    // Try OpenAI API first, fallback to local analysis
+    let analysis = await analyzeEmotionWithOpenAI(empathyText);
+    
+    if(!analysis){
+      // Fallback to local analysis if API fails
+      showStatus('Using local analysis (API error)…');
+      const volumeLevel = 0.3 + Math.random() * 0.7;
+      const pitchHeight = 0.2 + Math.random() * 0.8;
+      const speechRate = 0.3 + Math.random() * 0.7;
+      analysis = analyzeEmotionFull(empathyText, volumeLevel, pitchHeight, speechRate);
+    }
+    
+    setSentiment(analysis);
+    setCurrentEmotion(analysis.emotion);
+    setEmotionVibe(analysis.vibe);
+    setBgTone(analysis.temp);
+    
+    const emotionIntensity = analysis.intensity || analysis.score || 0.5;
+    const qualityScore = analysis.quality || 0.5;
+    const intensityPercent = Math.round(emotionIntensity * 100);
+    const qualityPercent = Math.round(qualityScore * 100);
+    
+    // Update audio quality
+    setAudioQuality(qualityScore);
+    
+    const msg = `AI Detected: ${analysis.intentLabel}. ${analysis.label} (${analysis.temp}) - Intensity: ${intensityPercent}% | Voice Quality: ${qualityPercent}%`;
+    showStatus(msg);
+    
+    // Auto-click the emotion button based on analysis
+    const emotionIndex = ['kind', 'friendly', 'neutral', 'tense', 'angry'].indexOf(analysis.emotion);
+    if(emotionIndex >= 0){
+      handleEmotionClick(emotionIndex);
+    }
+    
+    setTimeout(()=>{
+      setBgTone('');
+      setCurrentEmotion(null);
+      setEmotionVibe(null);
+      setAudioQuality(0.5);  // Reset quality after analysis
+    }, 8000);
+    
+    setEmpathyText('');
+  }
+
+  /* Audio upload */
+  async function handleUpload(e){
+    const file=e.target.files[0];
+    if(!file)return;
+    setUploadName(file.name.length>18?file.name.slice(0,16)+'…':file.name);
+    showStatus('Analyzing audio landscape…');
+    try{
+      const ab=await file.arrayBuffer();
+      const actx=new(window.AudioContext||window.webkitAudioContext)();
+      const decoded=await actx.decodeAudioData(ab);
+      const raw=decoded.getChannelData(0);
+      const PTS=220, step=Math.max(1,Math.floor(raw.length/PTS));
+      const wave=[];
+      for(let i=0;i<PTS;i++){
+        let sum=0;
+        for(let j=0;j<step;j++)sum+=Math.abs(raw[Math.min(i*step+j,raw.length-1)]||0);
+        wave.push(sum/step);
+      }
+      const mx=Math.max(...wave)||1;
+      const normalizedWave = wave.map(v=>v/mx);
+      setUploadWave(normalizedWave);
+      
+      // Analyze audio characteristics
+      const avg = wave.reduce((a,b)=>a+b,0)/wave.length;
+      const variance = wave.reduce((a,b)=>a+Math.pow(b-avg,2),0)/wave.length;
+      const stdDev = Math.sqrt(variance);
+      const peaks = wave.filter(v=>v>avg+stdDev).length;
+      const stability = 1 - (stdDev / (avg + 0.001));  // Smoothness metric
+      
+      // Infer emotion from audio characteristics
+      let audioEmotion = 'neutral';
+      let audioIntensity = avg;
+      
+      if(avg > 0.5 && stdDev > 0.25) audioEmotion = 'angry';  // Loud and chaotic
+      else if(avg > 0.4 && stdDev > 0.15) audioEmotion = 'tense';  // Moderate chaos
+      else if(stability > 0.75 && avg > 0.3) audioEmotion = 'friendly';  // Smooth and warm
+      else if(stability > 0.8 && avg < 0.25) audioEmotion = 'kind';  // Very smooth and gentle
+      else if(stability > 0.85) audioEmotion = 'neutral';  // Very stable
+      
+      // Display audio analysis
+      const emotionObj = EMOTIONS[audioEmotion];
+      const msg = `Audio analyzed: ${emotionObj.label} detected. Intensity: ${Math.round(audioIntensity*100)}% | Stability: ${Math.round(stability*100)}%`;
+      showStatus(msg);
+      
+      // Auto-trigger emotion
+      const emotionIndex = ['kind', 'friendly', 'neutral', 'tense', 'angry'].indexOf(audioEmotion);
+      if(emotionIndex >= 0){
+        handleEmotionClick(emotionIndex);
+      }
+      
+      actx.close();
+    }catch(err){
+      showStatus('Could not decode audio. Try MP3, WAV, or OGG.');
+    }
+    e.target.value='';
+  }
+
+  const stressPhrase=silenced?'silence':harmonize?'harmonic':stress<.28?'calm':stress<.55?'sensing':'elevated';
+
+  return(
+    <div style={{position:'fixed',inset:0,background:'#000',fontFamily:"'DM Mono',monospace"}}>
+      <AmbientField particleCount={particleCount} flowMode={flowMode} frozenTime={frozenTime}/>
+
+      {/* ── Background sentiment aura (emotion temperature) ── */}
+      {bgTone==='warm'&&(
+        <div key="warm" style={{
+          position:'fixed',inset:0,zIndex:1,pointerEvents:'none',
+          background:'radial-gradient(ellipse 65% 60% at 50% 50%, rgba(255,179,71,0.1) 0%, transparent 70%)',
+          animation:'warmGlow 4.5s ease-in-out forwards',
+        }}/>
+      )}
+      {bgTone==='cool'&&(
+        <div key="cool" style={{
+          position:'fixed',inset:0,zIndex:1,pointerEvents:'none',
+          background:'radial-gradient(ellipse 65% 60% at 50% 50%, rgba(100,180,255,0.08) 0%, transparent 70%)',
+          animation:'coolGlow 4.5s ease-in-out forwards',
+        }}/>
+      )}
+      {bgTone==='cold'&&(
+        <div key="cold" style={{
+          position:'fixed',inset:0,zIndex:1,pointerEvents:'none',
+          background:'radial-gradient(ellipse 65% 60% at 50% 50%, rgba(0,100,200,0.085) 0%, transparent 70%)',
+          animation:'coolGlow 4.5s ease-in-out forwards',
+        }}/>
+      )}
+      {bgTone==='light'&&(
+        <div key="light" style={{
+          position:'fixed',inset:0,zIndex:1,pointerEvents:'none',
+          background:'radial-gradient(ellipse 70% 65% at 50% 50%, rgba(255,255,255,0.12) 0%, transparent 72%)',
+          animation:'warmGlow 6s ease-in-out forwards',
+        }}/>
+      )}
+
+      {/* ── Hover ripple rings ── */}
+      {[...Array(3)].map((_,i)=>(
+        <div key={`${ripple}-${i}`} style={{
+          position:'fixed',
+          top:'50%',left:'50%',
+          width:360,height:360,
+          borderRadius:'50%',
+          border:'1px solid rgba(0,209,255,0.25)',
+          pointerEvents:'none',zIndex:2,
+          animation:`rippleOut 1.4s ease-out ${i*220}ms forwards`,
+        }}/>
+      ))}
+
+      {/* ── Emotional field ripples (emotion transitions) ── */}
+      {[...Array(2)].map((_,i)=>(
+        <svg key={`emotion-ripple-${emotionField}-${i}`} style={{
+          position:'fixed',
+          top:'50%',left:'50%',
+          width:600,height:600,
+          transform:'translate(-50%,-50%)',
+          pointerEvents:'none',zIndex:3,
+        }} viewBox="0 0 600 600">
+          <circle 
+            cx="300" cy="300" r="20"
+            fill="none"
+            stroke={blueMode ? 'rgba(0,100,200,0.4)' : harmonize ? 'rgba(0,209,255,0.35)' : 'rgba(255,179,71,0.3)'}
+            strokeWidth="1.5"
+            style={{
+              animation: `emotionShockwave ${0.8 + i*0.3}s ease-out forwards`,
+              animationDelay: `${i*150}ms`,
+            }}
+          />
+        </svg>
+      ))}
+
+      {/* ── Harmonize transformation field ── */}
+      {harmonizeIntensity > 0 && (
+        <div style={{
+          position:'fixed',inset:0,zIndex:6,pointerEvents:'none',
+          background:`radial-gradient(ellipse 60% 55% at 50% 50%, 
+            rgba(0,209,255,${0.15 * harmonizeIntensity}) 0%, 
+            transparent 70%)`,
+          animation:`harmonizeFlow 2s ease-in-out forwards`,
+        }}/>
+      )}
+
+      {/* ── Header ── */}
+      <div style={{
+        position:'fixed',top:0,left:0,right:0,zIndex:30,
+        display:'flex',alignItems:'center',justifyContent:'space-between',
+        padding:'22px 44px',
+        background:'linear-gradient(to bottom,rgba(0,0,0,.75),transparent)',
+      }}>
+        <span style={{
+          fontSize:'.5rem',letterSpacing:'.52em',textTransform:'uppercase',
+          background:'linear-gradient(120deg,#00D1FF,#FFB347)',
+          WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text',
+        }}>Echo · Pulse</span>
+        <span style={{fontSize:'.42rem',letterSpacing:'.24em',color:'rgba(255,255,255,0.18)',textTransform:'uppercase'}}>
+          Biological Boundary · Series I
+        </span>
+      </div>
+
+      {/* ── Status message ── */}
+      {statusMsg&&(
+        <div key={statusKey} style={{
+          position:'fixed',top:66,left:'50%',transform:'translateX(-50%)',
+          zIndex:35,pointerEvents:'none',
+          fontFamily:"'Cormorant Garamond',serif",fontStyle:'italic',
+          fontSize:'.84rem',color:'rgba(0,209,255,.68)',letterSpacing:'.05em',
+          whiteSpace:'nowrap',animation:'flowIn .5s ease both',
+        }}>{statusMsg}</div>
+      )}
+
+      {/* ── Central sculpture ── */}
+      <div style={{
+        position:'fixed',top:'50%',left:'50%',
+        transform:'translate(-50%,-50%)',
+        width:340,height:340,zIndex:5,
+      }}>
+        {/* Emotion Spectrum Visualization */}
+        <EmotionSpectrum 
+          stress={stress} 
+          harmonize={harmonize} 
+          silenced={silenced}
+          sentiment={sentiment}
+          currentEmotion={currentEmotion}
+          emotionRotation={emotionRotation}
+          selectedEmotion={selectedEmotion}
+          blueMode={blueMode}
+          ringColor={ringColor}
+          onEmotionClick={handleEmotionClick}
+        />
+
+        {/* Ambient outer rings */}
+        <div style={{
+          position:'absolute',inset:-48,borderRadius:'50%',
+          border: (selectedEmotion === 0 || selectedEmotion === 1) ? 'none' : '1px solid rgba(0,209,255,0.05)',
+          boxShadow: (selectedEmotion === 0 || selectedEmotion === 1) ? `0 0 80px rgba(255,179,71,0.12), 0 0 120px rgba(255,179,71,0.08), 0 0 180px rgba(255,179,71,0.04), inset 0 0 60px rgba(255,179,71,0.03)` : 'none',
+          animation:`${(selectedEmotion === 0 || selectedEmotion === 1) ? 'none' : silenced ? 'silenceRing 12s linear infinite' : harmonize ? 'harmonizeRing 6s linear infinite' : 'breatheSlow 11s ease-in-out infinite'}`,
+          pointerEvents:'none',
+          transition: 'all 0.8s ease',
+        }}/>
+        <div style={{
+          position:'absolute',inset:-26,borderRadius:'50%',
+          border: (selectedEmotion === 0 || selectedEmotion === 1) ? 'none' : `1px solid rgba(${silenced?'200,200,200':harmonize?'0,209,255':'255,179,71'},0.045)`,
+          boxShadow: (selectedEmotion === 0 || selectedEmotion === 1) ? `0 0 100px rgba(255,179,71,0.15), 0 0 160px rgba(255,179,71,0.10), 0 0 240px rgba(255,179,71,0.05)` : 'none',
+          animation:`${(selectedEmotion === 0 || selectedEmotion === 1) ? 'none' : silenced ? 'silenceRing 14s linear infinite' : harmonize ? 'harmonizeRing 5s linear infinite' : 'breatheSlow 8s ease-in-out infinite reverse'}`,
+          transition:'all 0.8s ease',
+          pointerEvents:'none',
+        }}/>
+
+        <FiberSculpture
+          stress={stress}
+          harmonize={harmonize}
+          silenced={silenced}
+          audioData={audioData}
+          currentEmotion={currentEmotion}
+          emotionVibe={emotionVibe}
+          selectedEmotion={selectedEmotion}
+          blueMode={blueMode}
+          shrinkRatio={shrinkRatio}
+          flowMode={flowMode}
+          frozenTime={frozenTime}
+          onEnter={handleHoverEnter}
+          onLeave={()=>{}}
+          onClick={handleSculptureClick}
+        />
+
+        <div style={{
+          position:'absolute',bottom:-36,left:'50%',transform:'translateX(-50%)',
+          fontSize:'.36rem',letterSpacing:'.26em',textTransform:'uppercase',
+          color:'rgba(255,255,255,0.16)',whiteSpace:'nowrap',pointerEvents:'none',
+        }}>
+          {silenced?'— silence —':'click · silence  ·  hover · feel'}
+        </div>
+      </div>
+
+      {/* ── Stress bar (right edge) ── */}
+      <div style={{
+        position:'fixed',right:42,top:'50%',transform:'translateY(-50%)',
+        zIndex:10,display:'flex',flexDirection:'column',alignItems:'center',gap:10,
+      }}>
+        <div style={{
+          fontSize:'.35rem',letterSpacing:'.28em',color:'rgba(255,255,255,0.16)',
+          textTransform:'uppercase',writingMode:'vertical-rl',letterSpacing:'.3em',
+        }}>{stressPhrase}</div>
+        <div style={{width:1,height:110,background:'rgba(255,255,255,0.07)',borderRadius:4,position:'relative',overflow:'hidden'}}>
+          {/* Quality indicator bar (subtle background) */}
+          <div style={{
+            position:'absolute',bottom:0,left:0,right:0,
+            height:`${audioQuality*100}%`,borderRadius:4,
+            background:'rgba(200,200,200,0.08)',
+            transition:'height 0.6s ease',
+            zIndex:1,
+          }}/>
+          {/* Stress level bar (main indicator) */}
+          <div style={{
+            position:'absolute',bottom:0,left:0,right:0,
+            height:`${stress*100}%`,borderRadius:4,
+            background:stress>.58?'linear-gradient(to top,rgba(255,179,71,.65),rgba(255,179,71,.2))':'linear-gradient(to top,rgba(0,209,255,.55),rgba(0,209,255,.12))',
+            transition:'height 1.8s ease,background 2.2s ease',
+            zIndex:2,
+          }}/>
+        </div>
+      </div>
+
+      {/* ── Action buttons (bottom center) ── */}
+      <div style={{
+        position:'fixed',bottom:28,left:'50%',transform:'translateX(-50%)',
+        zIndex:20,display:'flex',gap:14,alignItems:'center',
+      }}>
+        <button className={`btn${micActive?' active-a':''}`} onClick={toggleMic} style={{
+          transition:'all 0.3s ease',
+          boxShadow: micActive ? '0 0 16px rgba(255,179,71,0.4)' : 'none',
+        }}>
+          <span style={{
+            display:'inline-block',width:5,height:5,borderRadius:'50%',
+            background:micActive?'#FFB347':'rgba(255,255,255,0.28)',
+            verticalAlign:'middle',marginRight:7,
+            animation:micActive?'blink 1s step-end infinite':'none',
+          }}/>
+          {micActive?'◉ Listening':'◎ Mic'}
+        </button>
+        <button className={`btn${harmonize?' active-c':''}`} onClick={handleHarmonize} style={{
+          transition:'all 0.3s ease',
+          boxShadow: harmonize ? '0 0 16px rgba(0,209,255,0.4)' : 'none',
+        }}>
+          ∿ Harmonize
+        </button>
+        <button className={`btn${silenced?' active-c':''}`} onClick={handleSculptureClick} style={{
+          transition:'all 0.3s ease',
+          boxShadow: silenced ? '0 0 16px rgba(200,200,200,0.3)' : 'none',
+        }}>
+          {silenced?'◈ Awaken':'◈ Silence'}
+        </button>
+      </div>
+
+      {/* ── LEFT PANEL: Empathy Thermal ── */}
+      <div className="panel" style={{
+        position:'fixed',left:28,top:'50%',transform:'translateY(-50%)',
+        zIndex:15,width:230,padding:'20px 18px',
+        transition: `border-color 0.8s ease, background 0.8s ease`,
+        borderColor: bgTone==='warm' 
+          ? 'rgba(255,179,71,0.35)' 
+          : bgTone==='cold' 
+          ? 'rgba(100,180,255,0.28)' 
+          : 'rgba(255,255,255,0.055)',
+        background: bgTone==='warm'
+          ? 'rgba(255,179,71,0.04)'
+          : bgTone==='cold'
+          ? 'rgba(100,180,255,0.03)'
+          : 'rgba(255,255,255,0.025)',
+      }}>
+        <div style={{fontSize:'.38rem',letterSpacing:'.32em',textTransform:'uppercase',color:'rgba(255,255,255,0.2)',marginBottom:11}}>
+          Empathy · Thermal
+        </div>
+        <div style={{
+          fontFamily:"'Cormorant Garamond',serif",fontStyle:'italic',
+          fontSize:'.70rem',color:'rgba(255,255,255,0.30)',lineHeight:1.8,marginBottom:14,
+        }}>
+          Type what someone said.<br/>The necklace reads their tone.
+        </div>
+        <form onSubmit={handleEmpathy}>
+          <textarea
+            value={empathyText}
+            onChange={e=>setEmpathyText(e.target.value)}
+            placeholder="their words…"
+            rows={3}
+            style={{
+              width:'100%',background:'rgba(255,255,255,0.04)',
+              border:'1px solid rgba(255,255,255,0.09)',borderRadius:10,
+              padding:'9px 11px',color:'rgba(255,255,255,0.52)',
+              fontFamily:"'DM Mono',monospace",fontSize:'.58rem',
+              resize:'none',marginBottom:10,lineHeight:1.7,
+              transition:'border-color .3s, background .3s',
+            }}
+            onFocus={e=>{
+              e.target.style.borderColor='rgba(0,209,255,0.22)';
+              e.target.style.background='rgba(0,209,255,0.02)';
+            }}
+            onBlur={e=>{
+              e.target.style.borderColor='rgba(255,255,255,0.09)';
+              e.target.style.background='rgba(255,255,255,0.04)';
+            }}
+          />
+          <button type="submit" className="btn" style={{width:'100%',justifyContent:'center'}}>Read Tone</button>
+        </form>
+        {sentiment&&(
+          <div style={{
+            marginTop:13,padding:'12px 13px',borderRadius:10,
+            border:`1px solid ${EMOTIONS[sentiment.emotion]?.rgb || 'rgba(255,255,255,0.15)'}`,
+            background:EMOTIONS[sentiment.emotion]?.rgb.replace('rgb', 'rgba').replace(')', ',0.08)') || 'rgba(255,255,255,0.03)',
+            boxShadow: `0 0 14px ${EMOTIONS[sentiment.emotion]?.rgb.replace('rgb', 'rgba').replace(')', ',0.25)') || 'none'}`,
+            animation:'flowIn .5s ease',
+            transition: 'all 0.5s ease',
+          }}>
+            {/* Intent Detection Header */}
+            <div style={{
+              fontSize:'.38rem',letterSpacing:'.16em',marginBottom:8,
+              color: EMOTIONS[sentiment.emotion]?.rgb,
+              fontWeight: 'bold',
+              textTransform: 'uppercase',
+            }}>
+              {sentiment.intentLabel}
+            </div>
+            
+            {/* Emotion Label and Description */}
+            <div style={{
+              fontSize:'.45rem',letterSpacing:'.12em',marginBottom:6,
+              color: EMOTIONS[sentiment.emotion]?.rgb,
+            }}>
+              {sentiment.label}
+            </div>
+            <div style={{
+              fontFamily:"'Cormorant Garamond',serif",fontStyle:'italic',
+              fontSize:'.62rem',color:'rgba(255,255,255,0.45)',lineHeight:1.5,marginBottom:10,
+            }}>
+              {sentiment.desc}
+            </div>
+            
+            {/* Temperature & Vibration Readout */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '8px',
+              fontSize: '.36rem',
+              textTransform: 'uppercase',
+              letterSpacing: '.08em',
+              color: 'rgba(255,255,255,0.6)',
+            }}>
+              <div style={{padding:'6px', background:'rgba(0,0,0,0.3)', borderRadius:'6px', textAlign:'center'}}>
+                🌡 {sentiment.temp}
+              </div>
+              <div style={{padding:'6px', background:'rgba(0,0,0,0.3)', borderRadius:'6px', textAlign:'center'}}>
+                ◈ {sentiment.vibe}
+              </div>
+            </div>
+            
+            {/* Emotional Intensity Meter */}
+            <div style={{marginTop:10, paddingTop:10, borderTop:'1px solid rgba(255,255,255,0.1)'}}>
+              <div style={{fontSize:'.32rem', color:'rgba(255,255,255,0.4)', marginBottom:5, textTransform:'uppercase', letterSpacing:'.1em'}}>
+                Emotional Intensity
+              </div>
+              <div style={{
+                height:8,background:'rgba(0,0,0,0.5)',borderRadius:4,overflow:'hidden',marginBottom:6,
+              }}>
+                <div style={{
+                  height:'100%',width:`${(sentiment.intensity || sentiment.score || 0.5)*100}%`,
+                  background: EMOTIONS[sentiment.emotion]?.rgb || 'rgba(255,179,71,0.6)',
+                  transition:'width 0.4s ease',
+                  boxShadow: `0 0 8px ${EMOTIONS[sentiment.emotion]?.rgb || 'rgba(255,179,71,0.8)'}`,
+                }}/>
+              </div>
+              <div style={{fontSize:'.28rem', color:'rgba(255,255,255,0.4)', textAlign:'right'}}>
+                {Math.round((sentiment.intensity || sentiment.score || 0.5)*100)}%
+              </div>
+            </div>
+            
+            {/* Tone Analysis (simple bars) - with API data */}
+            {sentiment.toneAnalysis && (
+            <div style={{marginTop:10, paddingTop:10, borderTop:'1px solid rgba(255,255,255,0.1)'}}>
+              <div style={{fontSize:'.32rem', color:'rgba(255,255,255,0.4)', marginBottom:5, textTransform:'uppercase', letterSpacing:'.1em'}}>
+                Tone Profile
+              </div>
+              <div style={{display:'flex', gap:'4px', alignItems:'flex-end', height:'24px'}}>
+                <div style={{flex:1, background:`rgba(255,179,71,${sentiment.toneAnalysis.detectedVolume})`, borderRadius:'2px'}}title={`Volume: ${(sentiment.toneAnalysis.detectedVolume*100).toFixed(0)}%`}/>
+                <div style={{flex:1, background:`rgba(0,209,255,${sentiment.toneAnalysis.detectedPitch})`, borderRadius:'2px'}}title={`Pitch: ${(sentiment.toneAnalysis.detectedPitch*100).toFixed(0)}%`}/>
+                <div style={{flex:1, background:`rgba(200,200,200,${sentiment.toneAnalysis.detectedRate})`, borderRadius:'2px'}}title={`Rate: ${(sentiment.toneAnalysis.detectedRate*100).toFixed(0)}%`}/>
+              </div>
+              <div style={{display:'flex', gap:'4px', fontSize:'.28rem', color:'rgba(255,255,255,0.35)', marginTop:'4px', justifyContent:'space-between'}}>
+                <span>Vol</span>
+                <span>Pitch</span>
+                <span>Rate</span>
+              </div>
+            </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* ── RIGHT PANEL: 声纹调色盘 ── */}
+      <div className="panel" style={{
+        position:'fixed',right:28,top:'50%',transform:'translateY(-50%)',
+        zIndex:15,width:230,padding:'20px 18px',
+        transition: `border-color 0.6s ease, background 0.6s ease`,
+        borderColor: blueMode 
+          ? 'rgba(100,120,200,0.35)' 
+          : harmonize 
+          ? 'rgba(0,209,255,0.32)' 
+          : micActive
+          ? 'rgba(255,179,71,0.28)'
+          : 'rgba(255,255,255,0.055)',
+        background: blueMode
+          ? 'rgba(100,120,200,0.04)'
+          : harmonize
+          ? 'rgba(0,209,255,0.03)'
+          : micActive
+          ? 'rgba(255,179,71,0.02)'
+          : 'rgba(255,255,255,0.025)',
+        boxShadow: blueMode ? '0 0 20px rgba(100,120,200,0.15)' : harmonize ? '0 0 20px rgba(0,209,255,0.1)' : 'none',
+      }}>
+        <div style={{fontSize:'.38rem',letterSpacing:'.32em',textTransform:'uppercase',color:'rgba(255,255,255,0.2)',marginBottom:11}}>
+          voiceprint · Palette
+        </div>
+
+        {/* ── System Emotional State Indicator ── */}
+        <div style={{
+          padding:'10px',borderRadius:8,background:'rgba(0,0,0,0.4)',
+          border:`1px solid ${EMOTIONS[currentEmotion || 'neutral']?.rgb || 'rgba(255,255,255,0.15)'}`,
+          marginBottom:12,transition:'all 0.4s ease',
+        }}>
+          <div style={{fontSize:'.32rem',letterSpacing:'.12em',textTransform:'uppercase',color:'rgba(255,255,255,0.4)',marginBottom:5}}>
+            Current State
+          </div>
+          <div style={{
+            fontSize:'.45rem',letterSpacing:'.08em',
+            color: EMOTIONS[currentEmotion || 'neutral']?.rgb || 'rgba(255,255,255,0.5)',
+            fontWeight:'bold',marginBottom:5,
+          }}>
+            {(currentEmotion || 'sensing').toUpperCase()}
+          </div>
+          <div style={{
+            height:6,background:'rgba(0,0,0,0.6)',borderRadius:3,overflow:'hidden',marginBottom:4,
+          }}>
+            <div style={{
+              height:'100%',width:`${stress*100}%`,
+              background: blueMode ? 'linear-gradient(90deg,rgba(65,105,225,0.6),rgba(65,105,225,0.3))' : 
+                         ringColor === 'orange-kind' ? 'linear-gradient(90deg,rgba(255,215,0,0.6),rgba(255,215,0,0.3))' :
+                         ringColor === 'orange-friendly' ? 'linear-gradient(90deg,rgba(255,179,71,0.6),rgba(255,179,71,0.3))' :
+                         harmonize ? 'linear-gradient(90deg,rgba(0,209,255,0.6),rgba(0,209,255,0.3))' :
+                         silenced ? 'linear-gradient(90deg,rgba(180,180,180,0.6),rgba(180,180,180,0.3))' :
+                         'linear-gradient(90deg,rgba(255,179,71,0.6),rgba(255,179,71,0.3))',
+              transition:'width 0.6s ease, background 0.8s ease',
+            }}/>
+          </div>
+          <div style={{fontSize:'.28rem',color:'rgba(255,255,255,0.3)',letterSpacing:'.06em'}}>
+            {blueMode ? 'CONTRACTED' : harmonize ? 'HARMONIC' : silenced ? 'SILENT' : 'ACTIVE'}
+          </div>
+        </div>
+
+        <div style={{
+          fontFamily:"'Cormorant Garamond',serif",fontStyle:'italic',
+          fontSize:'.70rem',color:'rgba(255,255,255,0.30)',lineHeight:1.8,marginBottom:14,
+        }}>
+          Upload a dissonant sound.<br/>Watch it become harmonic.
+        </div>
+
+        <label style={{
+          display:'block',padding:'8px 0',borderRadius:999,textAlign:'center',
+          border:'1px solid rgba(255,255,255,0.12)',color:'rgba(255,255,255,0.30)',
+          fontFamily:"'DM Mono',monospace",fontSize:'.40rem',letterSpacing:'.2em',
+          textTransform:'uppercase',cursor:'pointer',transition:'all .3s',
+          background: uploadWave ? 'rgba(0,209,255,0.08)' : 'transparent',
+          borderColor: uploadWave ? 'rgba(0,209,255,0.32)' : 'rgba(255,255,255,0.12)',
+        }}
+          onMouseEnter={e=>{
+            e.currentTarget.style.borderColor='rgba(255,255,255,0.26)';
+            e.currentTarget.style.color='rgba(255,255,255,0.58)';
+          }}
+          onMouseLeave={e=>{
+            e.currentTarget.style.borderColor= uploadWave ? 'rgba(0,209,255,0.32)' : 'rgba(255,255,255,0.12)';
+            e.currentTarget.style.color= uploadWave ? 'rgba(0,209,255,0.5)' : 'rgba(255,255,255,0.30)';
+          }}
+        >
+          {uploadName||'+ Upload Audio'}
+          <input type="file" accept="audio/*,video/mp4" onChange={handleUpload} style={{display:'none'}}/>
+        </label>
+
+        {uploadWave&&(
+          <div style={{marginTop:14,animation:'flowIn .6s ease'}}>
+            <WaveDisplay wave={uploadWave}/>
+            <div style={{
+              fontFamily:"'Cormorant Garamond',serif",fontStyle:'italic',
+              fontSize:'.62rem',color:'rgba(0,209,255,0.60)',marginTop:8,lineHeight:1.6,
+              textShadow: '0 0 8px rgba(0,209,255,0.2)',
+            }}>Reconstructed as<br/>harmonic resonance.</div>
+          </div>
+        )}
+
+        {micActive&&audioData&&(
+          <div style={{marginTop:14,animation:'flowIn 0.4s ease'}}>
+            <div style={{fontSize:'.38rem',letterSpacing:'.18em',color:'rgba(255,179,71,0.58)',textTransform:'uppercase',marginBottom:6,fontWeight:'bold'}}>
+              ◉ Live Sonic Field
+            </div>
+            <MiniWave data={audioData}/>
+            <div style={{
+              fontSize:'.50rem',color:'rgba(255,179,71,0.40)',marginTop:6,
+              fontFamily:"'Cormorant Garamond',serif",fontStyle:'italic',
+            }}>Listening to chaos…</div>
+          </div>
+        )}
+
+        {!uploadWave&&!micActive&&(
+          <div style={{
+            marginTop:14,padding:'10px 0',
+            fontFamily:"'Cormorant Garamond',serif",fontStyle:'italic',
+            fontSize:'.65rem',color:'rgba(255,255,255,0.16)',lineHeight:1.85,
+          }}>
+            "Some sounds are destined never to reach the equator."
+          </div>
+        )}
+      </div>
+
+      {/* ── Footer manifesto ── */}
+      <div style={{
+        position:'fixed',bottom:68,left:'50%',transform:'translateX(-50%)',
+        zIndex:4,pointerEvents:'none',textAlign:'center',
+      }}>
+        <div style={{
+          fontFamily:"'Cormorant Garamond',serif",fontStyle:'italic',
+          fontSize:'.63rem',color:'rgba(255,255,255,0.13)',letterSpacing:'.06em',
+          transition:'all 2s ease',
+        }}>
+          {silenced
+            ?'Fragrance, warmth, seasons — all quietly slip past.'
+            :harmonize
+            ?'Like plum blossoms choosing to bloom even in shadow.'
+            :stress>.6
+            ?'In the end, it is always a missed encounter.'
+            :'At the bottom of my heart is an umbrella not carried on a cloudy day.'}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
